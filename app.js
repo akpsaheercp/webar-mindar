@@ -1,6 +1,6 @@
 /**
- * MindAR 3D Architectural WebAR
- * Dynamic Construction Animation, QR Base Anchoring & 360° Controls
+ * Meeladunnabi Mubarak & Rabee-ul-Awwal WebAR Experience
+ * 3D Hologram, Glowing Crescent & Dome, Lanterns, 360° Touch Controls
  */
 
 function initIcons() {
@@ -32,17 +32,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const hologramRotator = document.getElementById('hologram-rotator');
   const sceneEl = document.querySelector('a-scene');
 
-  // Building Tier Elements
-  const tiers = {
-    foundation: document.getElementById('building-foundation'),
-    ground: document.getElementById('floor-ground'),
-    floor1: document.getElementById('floor-1'),
-    floor2: document.getElementById('floor-2'),
-    floor3: document.getElementById('floor-3'),
-    rooftop: document.getElementById('floor-rooftop')
-  };
-  const constructionLaser = document.getElementById('construction-laser');
-  const infoText = document.getElementById('ar-info-text');
+  // Hologram 3D Groups
+  const baseGroup = document.getElementById('hologram-base');
+  const mosqueGroup = document.getElementById('mosque-structure');
+  const crescentGroup = document.getElementById('crescent-star-group');
+  const lanternLeft = document.getElementById('lantern-left');
+  const lanternRight = document.getElementById('lantern-right');
+  const sparkleRing = document.getElementById('celebration-sparkle-ring');
 
   // Modals & Action Buttons
   const targetModal = document.getElementById('target-modal');
@@ -66,9 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnRotY = document.getElementById('btn-rot-y');
   const btnRotZ = document.getElementById('btn-rot-z');
 
-  const floorChips = document.querySelectorAll('.chip');
+  const highlightChips = document.querySelectorAll('.chip');
 
-  // --- Audio Synthesizer for Construction SFX ---
+  // --- Spiritual Celebration Chimes Audio Synthesizer ---
   let audioEnabled = true;
   let audioCtx = null;
 
@@ -79,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function playTone(freq, type = 'sine', duration = 0.15, gainVal = 0.1) {
+  function playTone(freq, type = 'sine', duration = 0.25, gainVal = 0.12) {
     if (!audioEnabled) return;
     try {
       initAudio();
@@ -100,27 +96,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function playFoundationSound() {
-    playTone(180, 'triangle', 0.4, 0.2);
-    setTimeout(() => playTone(240, 'sine', 0.3, 0.15), 150);
-  }
-
-  function playFloorConstructSound(tierIndex) {
-    const freqs = [330, 440, 550, 660, 880];
-    const f = freqs[tierIndex % freqs.length];
-    playTone(f, 'sine', 0.25, 0.15);
-    setTimeout(() => playTone(f * 1.25, 'triangle', 0.2, 0.12), 100);
-  }
-
-  function playCompleteFanfare() {
+  function playHologramChime() {
     if (!audioEnabled) return;
-    [523.25, 659.25, 783.99, 1046.5].forEach((f, idx) => {
-      setTimeout(() => playTone(f, 'square', 0.2, 0.12), idx * 90);
+    // Harmonic spiritual arpeggio: C5 - E5 - G5 - B5 - C6
+    const notes = [523.25, 659.25, 783.99, 987.77, 1046.5];
+    notes.forEach((f, idx) => {
+      setTimeout(() => playTone(f, 'sine', 0.4, 0.15), idx * 120);
+    });
+  }
+
+  function playCelebrationFanfare() {
+    if (!audioEnabled) return;
+    const notes = [440, 554.37, 659.25, 880, 1108.73, 1318.51];
+    notes.forEach((f, idx) => {
+      setTimeout(() => playTone(f, idx % 2 === 0 ? 'sine' : 'triangle', 0.45, 0.18), idx * 100);
     });
   }
 
   function playClick() {
-    playTone(800, 'sine', 0.05, 0.08);
+    playTone(880, 'sine', 0.05, 0.08);
   }
 
   // Audio Toggle
@@ -137,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Day/Night Lighting Mode
+  // Night Mode & Lantern Lighting Toggle
   let isNightMode = false;
   const sunLight = document.getElementById('sun-light');
   const accentLight = document.getElementById('accent-light');
@@ -148,144 +142,92 @@ document.addEventListener('DOMContentLoaded', () => {
       playClick();
       isNightMode = !isNightMode;
       btnLighting.innerHTML = isNightMode 
-        ? '<i data-lucide="moon"></i>' 
-        : '<i data-lucide="sun"></i>';
+        ? '<i data-lucide="sun"></i>' 
+        : '<i data-lucide="moon"></i>';
       btnLighting.style.color = isNightMode ? '#fbbf24' : 'var(--text-main)';
       initIcons();
 
-      if (sunLight) sunLight.setAttribute('intensity', isNightMode ? '0.4' : '2.0');
-      if (accentLight) accentLight.setAttribute('intensity', isNightMode ? '2.2' : '1.2');
-      if (warmLight) warmLight.setAttribute('intensity', isNightMode ? '2.5' : '1.0');
+      if (sunLight) sunLight.setAttribute('intensity', isNightMode ? '0.5' : '2.2');
+      if (accentLight) accentLight.setAttribute('intensity', isNightMode ? '2.5' : '1.4');
+      if (warmLight) warmLight.setAttribute('intensity', isNightMode ? '3.0' : '1.2');
     });
   }
 
-  // --- Dynamic Building Construction Animation ---
-  let constructionInProgress = false;
+  // --- Dynamic Hologram Materialization Animation ---
+  let animInProgress = false;
 
-  function setTierVisibility(visibleTiers) {
-    Object.keys(tiers).forEach(key => {
-      if (tiers[key]) {
-        const isVis = visibleTiers === 'all' || visibleTiers.includes(key);
-        tiers[key].setAttribute('visible', isVis);
-      }
-    });
-  }
+  async function animateHologramAppearance() {
+    if (animInProgress || !hologramRotator) return;
+    animInProgress = true;
 
-  async function playConstructionSequence() {
-    if (constructionInProgress) return;
-    constructionInProgress = true;
-
-    // Reset all tiers to hidden except foundation
-    Object.values(tiers).forEach(t => t && t.setAttribute('visible', false));
-    if (constructionLaser) constructionLaser.setAttribute('visible', true);
-
-    // Stage 0: Foundation
-    if (tiers.foundation) {
-      tiers.foundation.setAttribute('visible', true);
-      tiers.foundation.setAttribute('scale', '0.01 0.01 0.01');
-      if (infoText) infoText.setAttribute('value', 'FOUNDATION STAGE\nConcrete Excavation & Ground Grid');
-      playFoundationSound();
-
-      // Animate scale up
-      let s = 0.01;
-      const fInterval = setInterval(() => {
-        s += 0.1;
-        if (s >= 1) {
-          s = 1;
-          clearInterval(fInterval);
-        }
-        tiers.foundation.setAttribute('scale', `${s} ${s} ${s}`);
-      }, 30);
-    }
-
-    await new Promise(r => setTimeout(r, 600));
-
-    // Array of upper tiers with target Y positions
-    const sequence = [
-      { key: 'ground', label: 'GROUND FLOOR & LOBBY\nColumns & Entrance Foyer', y: 0, laserY: 0.1 },
-      { key: 'floor1', label: 'FLOOR 1 APARTMENTS\nLiving Suites & Glass Balconies', y: 0.22, laserY: 0.32 },
-      { key: 'floor2', label: 'FLOOR 2 RESIDENCES\nArchitectural Facade & Lighting', y: 0.43, laserY: 0.53 },
-      { key: 'floor3', label: 'FLOOR 3 PENTHOUSE\nPanoramic Corner Luxury Suites', y: 0.64, laserY: 0.74 },
-      { key: 'rooftop', label: 'ROOFTOP TERRACE\nInfinity Pool, Pergola & Garden', y: 0.83, laserY: 0.95 }
-    ];
-
-    for (let i = 0; i < sequence.length; i++) {
-      const step = sequence[i];
-      const tierEl = tiers[step.key];
-      if (tierEl) {
-        if (infoText) infoText.setAttribute('value', step.label);
-        playFloorConstructSound(i);
-
-        // Move laser scanline
-        if (constructionLaser) {
-          constructionLaser.setAttribute('position', `0 ${step.laserY} 0`);
-        }
-
-        // Animate tier descending/rising smoothly
-        tierEl.setAttribute('visible', true);
-        tierEl.setAttribute('position', `0 ${step.y + 0.3} 0`);
-        tierEl.setAttribute('scale', '0.7 0.7 0.7');
-
-        let progress = 0;
-        await new Promise(done => {
-          const animInt = setInterval(() => {
-            progress += 0.12;
-            if (progress >= 1) {
-              progress = 1;
-              clearInterval(animInt);
-              done();
-            }
-            const currentY = (step.y + 0.3) - (0.3 * progress);
-            const currentS = 0.7 + 0.3 * progress;
-            tierEl.setAttribute('position', `0 ${currentY} 0`);
-            tierEl.setAttribute('scale', `${currentS} ${currentS} ${currentS}`);
-          }, 25);
-        });
-
-        await new Promise(r => setTimeout(r, 250));
-      }
-    }
-
-    // Construction Complete!
-    if (constructionLaser) constructionLaser.setAttribute('visible', false);
-    if (infoText) infoText.setAttribute('value', 'APARTMENT BUILDING COMPLETE\nModern Residency Luxury Tower');
-    playCompleteFanfare();
+    playHologramChime();
     triggerConfetti();
-    constructionInProgress = false;
+
+    // Scale up from 0 to 0.5 smoothly
+    hologramRotator.setAttribute('scale', '0.01 0.01 0.01');
+    let s = 0.01;
+    const growInt = setInterval(() => {
+      s += 0.04;
+      if (s >= 0.5) {
+        s = 0.5;
+        clearInterval(growInt);
+        animInProgress = false;
+      }
+      hologramRotator.setAttribute('scale', `${s} ${s} ${s}`);
+    }, 25);
   }
 
   if (btnReplayBuild) {
     btnReplayBuild.addEventListener('click', () => {
       playClick();
-      playConstructionSequence();
+      animateHologramAppearance();
     });
   }
 
-  // Floor Isolation Filter Chips
-  floorChips.forEach(chip => {
+  // Highlight Filter Chips
+  highlightChips.forEach(chip => {
     chip.addEventListener('click', () => {
       playClick();
-      floorChips.forEach(c => c.classList.remove('active'));
+      highlightChips.forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
 
-      const floor = chip.dataset.floor;
-      if (floor === 'all') {
-        setTierVisibility('all');
-        if (infoText) infoText.setAttribute('value', 'FULL TOWER VIEW\nModern Residency');
-      } else {
-        setTierVisibility([floor, 'foundation']);
-        if (infoText) infoText.setAttribute('value', `EXPLORING: ${floor.toUpperCase()}\nIsolated Level View`);
+      const target = chip.dataset.highlight;
+      if (target === 'all') {
+        if (baseGroup) baseGroup.setAttribute('visible', true);
+        if (mosqueGroup) mosqueGroup.setAttribute('visible', true);
+        if (crescentGroup) crescentGroup.setAttribute('visible', true);
+        if (lanternLeft) lanternLeft.setAttribute('visible', true);
+        if (lanternRight) lanternRight.setAttribute('visible', true);
+      } else if (target === 'crescent') {
+        if (baseGroup) baseGroup.setAttribute('visible', true);
+        if (mosqueGroup) mosqueGroup.setAttribute('visible', false);
+        if (crescentGroup) crescentGroup.setAttribute('visible', true);
+        if (lanternLeft) lanternLeft.setAttribute('visible', false);
+        if (lanternRight) lanternRight.setAttribute('visible', false);
+      } else if (target === 'dome') {
+        if (baseGroup) baseGroup.setAttribute('visible', true);
+        if (mosqueGroup) mosqueGroup.setAttribute('visible', true);
+        if (crescentGroup) crescentGroup.setAttribute('visible', false);
+        if (lanternLeft) lanternLeft.setAttribute('visible', false);
+        if (lanternRight) lanternRight.setAttribute('visible', false);
+      } else if (target === 'lanterns') {
+        if (baseGroup) baseGroup.setAttribute('visible', true);
+        if (mosqueGroup) mosqueGroup.setAttribute('visible', false);
+        if (crescentGroup) crescentGroup.setAttribute('visible', false);
+        if (lanternLeft) lanternLeft.setAttribute('visible', true);
+        if (lanternRight) lanternRight.setAttribute('visible', true);
       }
     });
   });
 
-  // --- 360° 3-Axis Hologram Rotation & Scale Controller ---
-  let rotX = 90; // Default flat facing
+  // --- 360° 3-Axis Hologram Rotation & Oscillation ---
+  let rotX = 90;
   let rotY = 0;
   let rotZ = 0;
-  let currentScale = 1.0;
+  let currentScale = 0.5;
   let isAutoRotating = true;
-  let autoRotateSpeed = 0.5;
+  let autoRotateSpeed = 0.45;
+  let frameCount = 0;
 
   function updateHologramTransform() {
     if (hologramRotator) {
@@ -294,11 +236,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Animation Loop (Turntable Rotation & Lantern Swaying)
   function renderLoop() {
+    frameCount++;
     if (isAutoRotating) {
       rotY = (rotY + autoRotateSpeed) % 360;
       updateHologramTransform();
     }
+
+    // Gentle lantern sway oscillation
+    const sway = Math.sin(frameCount * 0.04) * 8;
+    if (lanternLeft) lanternLeft.setAttribute('rotation', `0 0 ${sway}`);
+    if (lanternRight) lanternRight.setAttribute('rotation', `0 0 ${-sway}`);
+
+    // Sparkle ring pulse
+    if (sparkleRing) {
+      const ringScale = 1 + Math.sin(frameCount * 0.05) * 0.06;
+      sparkleRing.setAttribute('scale', `${ringScale} ${ringScale} 1`);
+    }
+
     requestAnimationFrame(renderLoop);
   }
   renderLoop();
@@ -321,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
       rotX = 90;
       rotY = 0;
       rotZ = 0;
-      currentScale = 1.0;
+      currentScale = 0.5;
       isAutoRotating = false;
       if (btnAutoRotate) {
         btnAutoRotate.classList.remove('active');
@@ -419,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (initialPinchDistance > 0) {
         const scaleFactor = currentDist / initialPinchDistance;
-        currentScale = Math.max(0.4, Math.min(2.5, currentScale * (1 + (scaleFactor - 1) * 0.15)));
+        currentScale = Math.max(0.2, Math.min(1.5, currentScale * (1 + (scaleFactor - 1) * 0.15)));
         initialPinchDistance = currentDist;
       }
 
@@ -468,7 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('wheel', (e) => {
     if (e.target.closest('.modal-card')) return;
-    currentScale = Math.max(0.4, Math.min(2.5, currentScale - e.deltaY * 0.001));
+    currentScale = Math.max(0.2, Math.min(1.5, currentScale - e.deltaY * 0.001));
     updateHologramTransform();
   }, { passive: true });
 
@@ -495,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Quick Action Buttons
   if (btnParty) {
     btnParty.addEventListener('click', () => {
-      playCompleteFanfare();
+      playCelebrationFanfare();
       triggerConfetti();
     });
   }
@@ -513,8 +469,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (navigator.share) {
         try {
           await navigator.share({
-            title: '3D Architectural AR Apartment Experience',
-            text: 'Scan the QR foundation base to build a modern luxury flat in Augmented Reality!',
+            title: 'Meeladunnabi Mubarak | Rabee-ul-Awwal WebAR',
+            text: 'Experience the 3D Meeladunnabi celebration hologram in Augmented Reality!',
             url: window.location.href,
           });
         } catch (err) {}
@@ -530,10 +486,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (targetAnchor) {
     targetAnchor.addEventListener('targetFound', () => {
-      console.log('🏗️ QR Foundation Target Found!');
+      console.log('🌙 Meeladunnabi Target Found!');
 
       if (isFirstFound) {
-        playConstructionSequence();
+        animateHologramAppearance();
         isFirstFound = false;
       }
 
@@ -544,11 +500,11 @@ document.addEventListener('DOMContentLoaded', () => {
         statusBanner.classList.remove('lost');
         statusBanner.classList.add('found');
       }
-      if (statusText) statusText.textContent = 'Foundation Base Locked! 🏗️';
+      if (statusText) statusText.textContent = 'Meeladunnabi Hologram Active! 🌙✨';
     });
 
     targetAnchor.addEventListener('targetLost', () => {
-      console.log('Foundation Target Lost');
+      console.log('Target Lost');
       if (scanningGuide) scanningGuide.classList.remove('hidden');
       if (gestureHint) gestureHint.classList.add('hidden');
       if (arControls) arControls.classList.add('hidden');
@@ -556,7 +512,7 @@ document.addEventListener('DOMContentLoaded', () => {
         statusBanner.classList.remove('found');
         statusBanner.classList.add('lost');
       }
-      if (statusText) statusText.textContent = 'Searching for QR Foundation Base...';
+      if (statusText) statusText.textContent = 'Searching for Darusuffa Card...';
     });
   }
 
@@ -656,7 +612,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => clearInterval(monitorInterval), 6000);
   setTimeout(dismissLoadingOverlay, 1500);
 
-  // Confetti Particle System
+  // Confetti Particle System (Golden Starburst & Emerald Petals)
   const canvas = document.getElementById('confetti-canvas');
   const ctx = canvas ? canvas.getContext('2d') : null;
   let particles = [];
@@ -677,20 +633,21 @@ document.addEventListener('DOMContentLoaded', () => {
   function triggerConfetti() {
     if (!ctx) return;
     resizeCanvas();
-    const colors = ['#10b981', '#22c55e', '#06b6d4', '#f59e0b', '#f43f5e', '#fb7185', '#fef08a', '#38bdf8'];
+    const colors = ['#fbbf24', '#f59e0b', '#10b981', '#059669', '#22c55e', '#f43f5e', '#38bdf8', '#fef08a'];
     
-    for (let i = 0; i < 70; i++) {
+    for (let i = 0; i < 90; i++) {
       particles.push({
-        x: canvas.width / 2 + (Math.random() - 0.5) * 150,
-        y: canvas.height / 2 + (Math.random() - 0.5) * 150,
-        vx: (Math.random() - 0.5) * 12,
-        vy: (Math.random() - 1.2) * 12,
-        size: Math.random() * 8 + 4,
+        x: canvas.width / 2 + (Math.random() - 0.5) * 160,
+        y: canvas.height / 2 + (Math.random() - 0.5) * 160,
+        vx: (Math.random() - 0.5) * 14,
+        vy: (Math.random() - 1.2) * 14,
+        size: Math.random() * 9 + 4,
         color: colors[Math.floor(Math.random() * colors.length)],
         rotation: Math.random() * 360,
-        vRot: (Math.random() - 0.5) * 10,
+        vRot: (Math.random() - 0.5) * 12,
         alpha: 1,
-        decay: Math.random() * 0.015 + 0.01
+        decay: Math.random() * 0.015 + 0.01,
+        isStar: Math.random() > 0.5
       });
     }
 
@@ -705,7 +662,7 @@ document.addEventListener('DOMContentLoaded', () => {
     particles.forEach(p => {
       p.x += p.vx;
       p.y += p.vy;
-      p.vy += 0.25;
+      p.vy += 0.22;
       p.rotation += p.vRot;
       p.alpha -= p.decay;
 
@@ -714,7 +671,24 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.translate(p.x, p.y);
       ctx.rotate((p.rotation * Math.PI) / 180);
       ctx.fillStyle = p.color;
-      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+
+      if (p.isStar) {
+        // Draw 4-point golden sparkle
+        ctx.beginPath();
+        ctx.moveTo(0, -p.size);
+        ctx.lineTo(p.size * 0.3, -p.size * 0.3);
+        ctx.lineTo(p.size, 0);
+        ctx.lineTo(p.size * 0.3, p.size * 0.3);
+        ctx.lineTo(0, p.size);
+        ctx.lineTo(-p.size * 0.3, p.size * 0.3);
+        ctx.lineTo(-p.size, 0);
+        ctx.lineTo(-p.size * 0.3, -p.size * 0.3);
+        ctx.closePath();
+        ctx.fill();
+      } else {
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+      }
+
       ctx.restore();
     });
 

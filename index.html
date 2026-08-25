@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Darusuffa WebAR | 3D Flat Building from QR Base</title>
-  <meta name="description" content="Augmented Reality experience showing a modern apartment flat constructing from its QR foundation.">
+  <title>Meeladunnabi Mubarak | Rabee-ul-Awwal WebAR</title>
+  <meta name="description" content="Augmented Reality celebration of Meeladunnabi & the blessed month of Rabee-ul-Awwal.">
 
   <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌙</text></svg>">
 
   <!-- Smart Multi-Camera Resolver for Android & iOS -->
   <script>
@@ -56,7 +56,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,700;1,700&family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
 </head>
@@ -75,139 +75,135 @@
       <!-- Camera -->
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- Target Anchor 0 (Darusuffa Card QR Base) -->
+      <!-- Target Anchor 0 (Darusuffa Card) -->
       <a-entity id="target-anchor" mindar-image-target="targetIndex: 0">
         
-        <!-- 3D Hologram Rotator Group (Centered on QR Code Base) -->
-        <a-entity id="hologram-rotator" position="0 0 0" rotation="90 0 0" scale="0.45 0.45 0.45">
+        <!-- 3D Hologram Rotator Group (Centered on Target Card) -->
+        <a-entity id="hologram-rotator" position="0 0 0" rotation="90 0 0" scale="0.5 0.5 0.5">
 
-          <!-- ================= 1. FOUNDATION LEVEL (Natural Sandstone & Teak Footings) ================= -->
-          <a-entity id="building-foundation">
-            <!-- Ground Concrete Foundation Slab -->
-            <a-box position="0 -0.02 0" width="0.76" height="0.04" depth="0.76" color="#1e293b" material="roughness: 0.8"></a-box>
-            <!-- Earthy Green Reinforcement Grid -->
-            <a-box position="0 0.005 0" width="0.73" height="0.01" depth="0.73" color="#10b981" opacity="0.6" material="wireframe: true"></a-box>
-            <!-- 4 Heavy Sandstone Foundation Footings -->
-            <a-box position="-0.3 0.04 -0.3" width="0.1" height="0.08" depth="0.1" color="#78350f"></a-box>
-            <a-box position="0.3 0.04 -0.3" width="0.1" height="0.08" depth="0.1" color="#78350f"></a-box>
-            <a-box position="-0.3 0.04 0.3" width="0.1" height="0.08" depth="0.1" color="#78350f"></a-box>
-            <a-box position="0.3 0.04 0.3" width="0.1" height="0.08" depth="0.1" color="#78350f"></a-box>
-            <!-- Glowing Botanical Emerald Foundation Ring -->
-            <a-ring position="0 0.001 0" rotation="-90 0 0" radius-inner="0.45" radius-outer="0.55" color="#10b981" opacity="0.85" material="shader: flat; transparent: true"></a-ring>
+          <!-- ================= 1. HOLOGRAPHIC GEOMETRIC BASE ================= -->
+          <a-entity id="hologram-base">
+            <!-- Outer Glowing Emerald Mandala Ring -->
+            <a-ring position="0 0.005 0" rotation="-90 0 0" radius-inner="0.48" radius-outer="0.58" color="#10b981" opacity="0.85" material="shader: flat; transparent: true"></a-ring>
+            <!-- Middle Golden Geometric Ring -->
+            <a-ring position="0 0.01 0" rotation="-90 0 0" radius-inner="0.36" radius-outer="0.42" color="#fbbf24" opacity="0.9" material="shader: flat; transparent: true"></a-ring>
+            <!-- Inner Azure Accent Ring -->
+            <a-ring position="0 0.015 0" rotation="-90 0 0" radius-inner="0.24" radius-outer="0.28" color="#38bdf8" opacity="0.8" material="shader: flat; transparent: true"></a-ring>
+            <!-- Circular Star Platform Base -->
+            <a-cylinder position="0 0.001 0" radius="0.5" height="0.01" color="#061c14" opacity="0.9" material="roughness: 0.2; metalness: 0.8"></a-cylinder>
           </a-entity>
 
-          <!-- ================= 2. GROUND FLOOR (Entrance Lobby, Timber Columns & Garden) ================= -->
-          <a-entity id="floor-ground" position="0 0 0" class="building-tier">
-            <!-- 4 Teak Wood Support Columns -->
-            <a-cylinder position="-0.28 0.12 -0.28" radius="0.025" height="0.16" color="#92400e"></a-cylinder>
-            <a-cylinder position="0.28 0.12 -0.28" radius="0.025" height="0.16" color="#92400e"></a-cylinder>
-            <a-cylinder position="-0.28 0.12 0.28" radius="0.025" height="0.16" color="#92400e"></a-cylinder>
-            <a-cylinder position="0.28 0.12 0.28" radius="0.025" height="0.16" color="#92400e"></a-cylinder>
-            <!-- Central Lobby Glass Core -->
-            <a-box position="0 0.12 0" width="0.48" height="0.16" depth="0.48" color="#06b6d4" opacity="0.45" material="transparent: true; roughness: 0.1"></a-box>
-            <!-- Entrance Emerald Glass Canopy -->
-            <a-box position="0 0.1 0.28" width="0.24" height="0.01" depth="0.12" color="#10b981" opacity="0.85"></a-box>
-            <!-- Lobby Entrance Garden Planters -->
-            <a-box position="-0.2 0.03 0.32" width="0.12" height="0.04" depth="0.06" color="#15803d"></a-box>
-            <a-box position="0.2 0.03 0.32" width="0.12" height="0.04" depth="0.06" color="#15803d"></a-box>
-            <!-- Lobby Sandstone Ceiling / First Floor Slab -->
-            <a-box position="0 0.21 0" width="0.68" height="0.02" depth="0.68" color="#334155"></a-box>
+          <!-- ================= 2. 3D MOSQUE DOME & MINARETS ARCHITECTURE ================= -->
+          <a-entity id="mosque-structure" position="0 0.08 0">
+            <!-- Central Green Dome (Gumbad-e-Khizra) -->
+            <a-sphere position="0 0.22 0" radius="0.18" color="#059669" material="roughness: 0.3; metalness: 0.4"></a-sphere>
+            <a-cylinder position="0 0.11 0" radius="0.17" height="0.14" color="#0f392b"></a-cylinder>
+            <!-- Golden Dome Pinnacle (Crescent Finial) -->
+            <a-cylinder position="0 0.41 0" radius="0.008" height="0.08" color="#fbbf24"></a-cylinder>
+            <a-sphere position="0 0.46 0" radius="0.02" color="#fbbf24" material="emissive: #f59e0b; emissiveIntensity: 0.8"></a-sphere>
+
+            <!-- Left Minaret -->
+            <a-entity position="-0.32 0 0">
+              <a-cylinder position="0 0.2 0" radius="0.022" height="0.4" color="#0f392b"></a-cylinder>
+              <a-cylinder position="0 0.42 0" radius="0.03" height="0.04" color="#d97706"></a-cylinder>
+              <a-cone position="0 0.47 0" radius-bottom="0.025" radius-top="0.001" height="0.08" color="#059669"></a-cone>
+              <a-sphere position="0 0.52 0" radius="0.01" color="#fbbf24" material="emissive: #fbbf24; emissiveIntensity: 1"></a-sphere>
+            </a-entity>
+
+            <!-- Right Minaret -->
+            <a-entity position="0.32 0 0">
+              <a-cylinder position="0 0.2 0" radius="0.022" height="0.4" color="#0f392b"></a-cylinder>
+              <a-cylinder position="0 0.42 0" radius="0.03" height="0.04" color="#d97706"></a-cylinder>
+              <a-cone position="0 0.47 0" radius-bottom="0.025" radius-top="0.001" height="0.08" color="#059669"></a-cone>
+              <a-sphere position="0 0.52 0" radius="0.01" color="#fbbf24" material="emissive: #fbbf24; emissiveIntensity: 1"></a-sphere>
+            </a-entity>
           </a-entity>
 
-          <!-- ================= 3. FLOOR 1 (Terracotta Apartment & Balcony Planters) ================= -->
-          <a-entity id="floor-1" position="0 0.22 0" class="building-tier">
-            <!-- Modern Warm Charcoal Apartment Core -->
-            <a-box position="0 0.1 0" width="0.62" height="0.18" depth="0.62" color="#1e293b"></a-box>
-            <!-- Panoramic Sky Blue Windows -->
-            <a-box position="0 0.1 0.315" width="0.5" height="0.12" depth="0.01" color="#38bdf8" opacity="0.65" material="transparent: true"></a-box>
-            <a-box position="-0.315 0.1 0" width="0.01" height="0.12" depth="0.5" color="#38bdf8" opacity="0.65" material="transparent: true"></a-box>
-            <a-box position="0.315 0.1 0" width="0.01" height="0.12" depth="0.5" color="#38bdf8" opacity="0.65" material="transparent: true"></a-box>
-            <!-- Natural Teak Wood Balcony Floor -->
-            <a-box position="0 0.04 0.36" width="0.42" height="0.01" depth="0.1" color="#b45309"></a-box>
-            <!-- Emerald Glass Railing with Floral Accents -->
-            <a-box position="0 0.08 0.41" width="0.42" height="0.07" depth="0.005" color="#10b981" opacity="0.75" material="transparent: true"></a-box>
-            <a-box position="0 0.05 0.41" width="0.4" height="0.02" depth="0.02" color="#22c55e"></a-box>
-            <!-- Floor 1 Ceiling Slab -->
-            <a-box position="0 0.20 0" width="0.68" height="0.02" depth="0.68" color="#334155"></a-box>
+          <!-- ================= 3. 3D GLOWING CRESCENT MOON & STAR (CENTRAL HOLOGRAPH) ================= -->
+          <a-entity id="crescent-star-group" position="0 0.58 0.08">
+            <!-- 3D Crescent Moon -->
+            <a-torus position="0 0 0" radius="0.22" radius-tubular="0.025" arc="240" rotation="0 0 45" color="#fbbf24" material="roughness: 0.1; metalness: 0.9; emissive: #f59e0b; emissiveIntensity: 0.7"></a-torus>
+            
+            <!-- 3D Glowing 5-Point Center Star -->
+            <a-entity position="0.08 0.06 0" scale="0.07 0.07 0.07">
+              <a-sphere position="0 0 0" radius="0.35" color="#ffffff" material="emissive: #fef08a; emissiveIntensity: 2"></a-sphere>
+              <a-cone position="0 0.8 0" radius-bottom="0.25" radius-top="0.01" height="0.8" color="#fbbf24"></a-cone>
+              <a-cone position="0.75 0.25 0" rotation="0 0 -72" radius-bottom="0.25" radius-top="0.01" height="0.8" color="#fbbf24"></a-cone>
+              <a-cone position="0.47 -0.65 0" rotation="0 0 -144" radius-bottom="0.25" radius-top="0.01" height="0.8" color="#fbbf24"></a-cone>
+              <a-cone position="-0.47 -0.65 0" rotation="0 0 144" radius-bottom="0.25" radius-top="0.01" height="0.8" color="#fbbf24"></a-cone>
+              <a-cone position="-0.75 0.25 0" rotation="0 0 72" radius-bottom="0.25" radius-top="0.01" height="0.8" color="#fbbf24"></a-cone>
+            </a-entity>
           </a-entity>
 
-          <!-- ================= 4. FLOOR 2 (Sandstone Residence & Golden Lighting) ================= -->
-          <a-entity id="floor-2" position="0 0.43 0" class="building-tier">
-            <!-- Apartment Core -->
-            <a-box position="0 0.1 0" width="0.62" height="0.18" depth="0.62" color="#0f172a"></a-box>
-            <!-- Warm Natural Timber Architectural Vertical Fins -->
-            <a-box position="-0.32 0.1 0.1" width="0.02" height="0.18" depth="0.08" color="#d97706"></a-box>
-            <a-box position="0.32 0.1 -0.1" width="0.02" height="0.18" depth="0.08" color="#d97706"></a-box>
-            <!-- Sunlit Warm Golden Windows -->
-            <a-box position="0 0.1 0.315" width="0.5" height="0.12" depth="0.01" color="#fbbf24" opacity="0.6" material="transparent: true"></a-box>
-            <a-box position="-0.315 0.1 0" width="0.01" height="0.12" depth="0.5" color="#38bdf8" opacity="0.65" material="transparent: true"></a-box>
-            <!-- Side Balcony with Lush Greenery -->
-            <a-box position="0.36 0.04 0" width="0.1" height="0.01" depth="0.4" color="#b45309"></a-box>
-            <a-box position="0.41 0.08 0" width="0.005" height="0.07" depth="0.4" color="#10b981" opacity="0.75" material="transparent: true"></a-box>
-            <a-box position="0.41 0.05 0" width="0.02" height="0.02" depth="0.38" color="#22c55e"></a-box>
-            <!-- Floor 2 Ceiling Slab -->
-            <a-box position="0 0.20 0" width="0.68" height="0.02" depth="0.68" color="#334155"></a-box>
+          <!-- ================= 4. HANGING ISLAMIC LANTERNS (FANOUS) ================= -->
+          <!-- Left Lantern -->
+          <a-entity id="lantern-left" position="-0.42 0.35 0.15">
+            <a-cylinder position="0 0.12 0" radius="0.002" height="0.24" color="#d97706"></a-cylinder>
+            <a-octahedron position="0 0 0" radius="0.04" color="#fbbf24" material="emissive: #fbbf24; emissiveIntensity: 1.5"></a-octahedron>
+            <a-light type="point" intensity="0.8" distance="0.8" color="#fbbf24"></a-light>
           </a-entity>
 
-          <!-- ================= 5. FLOOR 3 (Luxury Penthouse Suite & Cedar Overhang) ================= -->
-          <a-entity id="floor-3" position="0 0.64 0" class="building-tier">
-            <!-- Penthouse Core -->
-            <a-box position="0 0.09 0" width="0.56" height="0.16" depth="0.56" color="#1e293b"></a-box>
-            <!-- Panoramic Azure Glass Walls -->
-            <a-box position="0.1 0.09 0.285" width="0.34" height="0.14" depth="0.01" color="#06b6d4" opacity="0.75" material="transparent: true"></a-box>
-            <a-box position="-0.1 0.09 0.285" width="0.34" height="0.14" depth="0.01" color="#06b6d4" opacity="0.75" material="transparent: true"></a-box>
-            <!-- Teak Penthouse Terrace Deck -->
-            <a-box position="0 0.03 0.32" width="0.58" height="0.01" depth="0.1" color="#b45309"></a-box>
-            <!-- Penthouse Warm Timber Roof Slab -->
-            <a-box position="0 0.18 0" width="0.64" height="0.02" depth="0.64" color="#78350f"></a-box>
+          <!-- Right Lantern -->
+          <a-entity id="lantern-right" position="0.42 0.35 0.15">
+            <a-cylinder position="0 0.12 0" radius="0.002" height="0.24" color="#d97706"></a-cylinder>
+            <a-octahedron position="0 0 0" radius="0.04" color="#fbbf24" material="emissive: #fbbf24; emissiveIntensity: 1.5"></a-octahedron>
+            <a-light type="point" intensity="0.8" distance="0.8" color="#fbbf24"></a-light>
           </a-entity>
 
-          <!-- ================= 6. ROOFTOP (Infinity Pool, Cedar Pergola & Garden) ================= -->
-          <a-entity id="floor-rooftop" position="0 0.83 0" class="building-tier">
-            <!-- Sandstone Terrace Base -->
-            <a-box position="0 0.01 0" width="0.6" height="0.02" depth="0.6" color="#475569"></a-box>
-            <!-- Crystal Azure Infinity Pool -->
-            <a-box position="-0.12 0.03 -0.1" width="0.25" height="0.02" depth="0.3" color="#06b6d4" opacity="0.9" material="roughness: 0.05"></a-box>
-            <!-- Warm Cedar Wood Pergola Canopy -->
-            <a-box position="0.15 0.08 0.1" width="0.22" height="0.01" depth="0.22" color="#b45309"></a-box>
-            <a-cylinder position="0.05 0.04 0.0" radius="0.008" height="0.08" color="#78350f"></a-cylinder>
-            <a-cylinder position="0.25 0.04 0.0" radius="0.008" height="0.08" color="#78350f"></a-cylinder>
-            <a-cylinder position="0.05 0.04 0.2" radius="0.008" height="0.08" color="#78350f"></a-cylinder>
-            <a-cylinder position="0.25 0.04 0.2" radius="0.008" height="0.08" color="#78350f"></a-cylinder>
-            <!-- Lush Rooftop Garden Beds with Blooming Flowers -->
-            <a-box position="-0.15 0.03 0.18" width="0.22" height="0.03" depth="0.09" color="#15803d"></a-box>
-            <a-sphere position="-0.18 0.05 0.18" radius="0.01" color="#f43f5e"></a-sphere>
-            <a-sphere position="-0.12 0.05 0.18" radius="0.01" color="#f59e0b"></a-sphere>
-            <!-- Communications Mast with Rose Beacon -->
-            <a-cylinder position="0.2 0.14 -0.2" radius="0.005" height="0.2" color="#94a3b8"></a-cylinder>
-            <a-sphere id="beacon-light" position="0.2 0.24 -0.2" radius="0.012" color="#f43f5e" material="emissive: #f43f5e; emissiveIntensity: 2.5"></a-sphere>
+          <!-- ================= 5. FLOATING 3D CELEBRATION BANNERS ================= -->
+          <!-- Upper Main Title: MEELADUNNABI MUBARAK -->
+          <a-entity position="0 0.96 0.12" rotation="0 0 0">
+            <!-- Glassmorphism Badge Backdrop -->
+            <a-plane width="1.1" height="0.2" color="#061c14" opacity="0.92" material="shader: flat; transparent: true"></a-plane>
+            <!-- Glowing Golden Outline Border -->
+            <a-plane width="1.12" height="0.22" position="0 0 -0.005" color="#fbbf24" opacity="0.85" material="shader: flat; transparent: true"></a-plane>
+            <a-text
+              value="✨ MEELADUNNABI MUBARAK ✨"
+              align="center"
+              color="#fbbf24"
+              position="0 0.02 0.02"
+              scale="0.36 0.36 0.36"
+              font="https://cdn.aframe.io/fonts/DejaVu-sdf.fnt">
+            </a-text>
           </a-entity>
 
-          <!-- ================= 7. NATURAL BOTANICAL SCANNER RING ================= -->
-          <a-ring id="construction-laser" position="0 0.02 0" rotation="-90 0 0" radius-inner="0.36" radius-outer="0.44" color="#10b981" opacity="0.9" material="shader: flat; transparent: true"></a-ring>
+          <!-- Lower Subtitle: BLESSED MONTH OF RABEE-UL-AWWAL -->
+          <a-entity position="0 0.78 0.12" rotation="0 0 0">
+            <a-plane width="0.95" height="0.12" color="#0f392b" opacity="0.9" material="shader: flat; transparent: true"></a-plane>
+            <a-plane width="0.97" height="0.14" position="0 0 -0.005" color="#10b981" opacity="0.8" material="shader: flat; transparent: true"></a-plane>
+            <a-text
+              value="Blessed Month of Rabee-ul-Awwal"
+              align="center"
+              color="#86efac"
+              position="0 0 0.02"
+              scale="0.28 0.28 0.28"
+              font="https://cdn.aframe.io/fonts/DejaVu-sdf.fnt">
+            </a-text>
+          </a-entity>
+
+          <!-- Sacred Salawat Text Banner -->
+          <a-entity position="0 -0.06 0.2" rotation="-30 0 0">
+            <a-plane width="0.9" height="0.1" color="#061c14" opacity="0.9" material="shader: flat; transparent: true"></a-plane>
+            <a-text
+              value="Peace & Blessings Upon the Prophet (SAW)"
+              align="center"
+              color="#ffffff"
+              position="0 0 0.02"
+              scale="0.24 0.24 0.24"
+              font="https://cdn.aframe.io/fonts/DejaVu-sdf.fnt">
+            </a-text>
+          </a-entity>
+
+          <!-- Pulsing Ambient Sparkle Ring -->
+          <a-ring id="celebration-sparkle-ring" position="0 0.45 0" rotation="-90 0 0" radius-inner="0.6" radius-outer="0.63" color="#f59e0b" opacity="0.75" material="shader: flat; transparent: true"></a-ring>
 
         </a-entity>
 
-        <!-- Floating Architectural Info Banner -->
-        <a-entity position="0 0.45 0.15" rotation="0 0 0">
-          <a-plane width="0.8" height="0.2" color="#0b1f18" opacity="0.94" material="shader: flat; transparent: true"></a-plane>
-          <a-plane width="0.82" height="0.22" position="0 0 -0.005" color="#10b981" opacity="0.9" material="shader: flat; transparent: true"></a-plane>
-          <a-text
-            id="ar-info-text"
-            value="DARUSUFFA ACADEMY\n3D AR Flat Foundation"
-            align="center"
-            color="#ffffff"
-            position="0 0 0.02"
-            scale="0.28"
-            font="https://cdn.aframe.io/fonts/DejaVu-sdf.fnt">
-          </a-text>
-        </a-entity>
-
-        <!-- Dynamic Architectural Lighting -->
+        <!-- Dynamic Spiritual Hologram Lighting -->
         <a-light type="ambient" intensity="1.6" color="#ffffff"></a-light>
         <a-light id="sun-light" type="directional" position="2 4 3" intensity="2.2" color="#fef3c7"></a-light>
-        <a-light id="accent-light" type="directional" position="-2 -3 2" intensity="1.4" color="#10b981"></a-light>
-        <a-light id="warm-light" type="point" position="0 0.4 0.5" intensity="1.2" color="#fbbf24" distance="2"></a-light>
+        <a-light id="accent-light" type="directional" position="-2 -3 2" intensity="1.6" color="#10b981"></a-light>
+        <a-light id="warm-light" type="point" position="0 0.6 0.4" intensity="2.0" color="#fbbf24" distance="3"></a-light>
 
       </a-entity>
     </a-scene>
@@ -219,11 +215,11 @@
       <div class="loading-spinner-wrapper">
         <div id="loading-ring" class="loading-ring"></div>
         <div class="loading-icon">
-          <i data-lucide="leaf"></i>
+          <i data-lucide="moon"></i>
         </div>
       </div>
-      <h2>Darusuffa WebAR</h2>
-      <p id="loading-status">Starting camera & building engine...</p>
+      <h2>Meeladunnabi WebAR</h2>
+      <p id="loading-status">Starting camera & celebration hologram...</p>
       
       <div id="progress-container" class="progress-bar-container">
         <div id="progress-bar" class="progress-bar"></div>
@@ -253,7 +249,7 @@
 
       <div class="loading-tips" id="loading-tip-text">
         <i data-lucide="sparkles"></i>
-        <span>Point camera at Darusuffa card to construct 3D apartment flat.</span>
+        <span>Point camera at Darusuffa card to reveal the Meeladunnabi hologram.</span>
       </div>
     </div>
   </div>
@@ -265,12 +261,12 @@
     <header class="top-nav">
       <div class="brand-badge">
         <span class="pulse-dot"></span>
-        <span class="brand-title">Darusuffa <span class="brand-sub">AR Builder</span></span>
+        <span class="brand-title">Meeladunnabi <span class="brand-sub">Rabee-ul-Awwal</span></span>
       </div>
 
       <div class="nav-actions">
-        <button id="btn-lighting" class="btn-icon" title="Toggle Day/Night Mode">
-          <i data-lucide="sun"></i>
+        <button id="btn-lighting" class="btn-icon" title="Toggle Night & Lantern Lights">
+          <i data-lucide="moon"></i>
         </button>
         <button id="btn-audio" class="btn-icon" title="Toggle Sound">
           <i data-lucide="volume-2"></i>
@@ -288,7 +284,7 @@
     <!-- Gesture 360° Hint Banner -->
     <div id="gesture-hint" class="gesture-hint hidden">
       <i data-lucide="rotate-3d"></i>
-      <span>👆 Drag to rotate 360° (X, Y, Z) • 🤏 Pinch to scale</span>
+      <span>👆 Drag to rotate 360° • 🤏 Pinch to scale hologram</span>
     </div>
 
     <!-- Scanning Reticle (Searching for Marker) -->
@@ -317,29 +313,26 @@
       <!-- Action Controls -->
       <div id="ar-controls" class="ar-controls hidden">
         
-        <!-- Construction Stage Player Controls -->
+        <!-- Celebration Highlights Row -->
         <div class="control-group">
           <div class="control-label-row">
-            <span class="control-label"><i data-lucide="hammer"></i> Building Construction Stage</span>
-            <button id="btn-replay-build" class="btn-micro accent" title="Replay Construction from Foundation">
-              <i data-lucide="refresh-cw"></i> Rebuild from Base
+            <span class="control-label"><i data-lucide="sparkles"></i> Celebration Highlights</span>
+            <button id="btn-replay-build" class="btn-micro accent" title="Replay Hologram Appearance">
+              <i data-lucide="refresh-cw"></i> Re-animate
             </button>
           </div>
           <div class="chip-group">
-            <button class="chip active" data-floor="all">🏙️ Full Tower</button>
-            <button class="chip" data-floor="foundation">🧱 Foundation</button>
-            <button class="chip" data-floor="ground">🚪 Lobby</button>
-            <button class="chip" data-floor="floor1">🏠 Floor 1</button>
-            <button class="chip" data-floor="floor2">🏠 Floor 2</button>
-            <button class="chip" data-floor="floor3">👑 Penthouse</button>
-            <button class="chip" data-floor="rooftop">🏊 Rooftop Pool</button>
+            <button class="chip active" data-highlight="all">🌙 Full Hologram</button>
+            <button class="chip" data-highlight="crescent">⭐ Crescent & Star</button>
+            <button class="chip" data-highlight="dome">🕌 Green Dome</button>
+            <button class="chip" data-highlight="lanterns">🏮 Lanterns</button>
           </div>
         </div>
 
         <!-- 360° Hologram Rotation Controls -->
         <div class="control-group">
           <div class="control-label-row">
-            <span class="control-label"><i data-lucide="rotate-cw"></i> 360° 3D Rotation</span>
+            <span class="control-label"><i data-lucide="rotate-cw"></i> 360° Hologram Rotation</span>
             <button id="btn-reset-rotation" class="btn-micro" title="Reset Rotation">
               <i data-lucide="rotate-ccw"></i> Reset
             </button>
@@ -371,8 +364,8 @@
             <span>Share</span>
           </button>
           <button id="btn-action-party" class="action-card-btn accent">
-            <i data-lucide="party-popper"></i>
-            <span>Celebrate!</span>
+            <i data-lucide="sparkles"></i>
+            <span>Celebrate! 🎉</span>
           </button>
         </div>
       </div>
@@ -391,7 +384,7 @@
         <button id="btn-close-modal" class="btn-close">&times;</button>
       </div>
       <div class="modal-body">
-        <p class="modal-instruction">Point your camera at this physical Darusuffa card to build the 3D apartment flat:</p>
+        <p class="modal-instruction">Point your camera at this physical Darusuffa card to reveal the Meeladunnabi 3D hologram:</p>
         <div class="marker-preview-box">
           <img id="target-preview-img" src="assets/card.png" alt="Darusuffa Target Card" class="marker-image">
         </div>
@@ -399,7 +392,7 @@
           <p><strong>💡 How to test:</strong></p>
           <ul>
             <li>Scan your physical Darusuffa printed card with your camera.</li>
-            <li>The 3D apartment flat will build automatically right on top of the QR code foundation!</li>
+            <li>The 3D Meeladunnabi Rabee-ul-Awwal celebration hologram will materialize automatically!</li>
           </ul>
         </div>
       </div>
@@ -417,7 +410,7 @@
       <div class="modal-header">
         <div class="modal-title-group">
           <i data-lucide="info"></i>
-          <h3>How 3D AR Building Works</h3>
+          <h3>How to Experience WebAR</h3>
         </div>
         <button id="btn-close-help" class="btn-close">&times;</button>
       </div>
@@ -426,21 +419,21 @@
           <div class="step-badge">1</div>
           <div class="step-text">
             <strong>Scan the Darusuffa Card</strong>
-            <p>Aim your camera at the Darusuffa card QR base.</p>
+            <p>Aim your camera at the card in normal landscape orientation.</p>
           </div>
         </div>
         <div class="help-step">
           <div class="step-badge">2</div>
           <div class="step-text">
-            <strong>Watch the Flat Construct</strong>
-            <p>The foundation slab, columns, residential floors, penthouse, and rooftop pool build up sequentially in 3D!</p>
+            <strong>Experience Meeladunnabi Celebration</strong>
+            <p>Watch the 3D glowing Crescent, Star, Green Dome, Lanterns, and Meeladunnabi Mubarak message appear in AR!</p>
           </div>
         </div>
         <div class="help-step">
           <div class="step-badge">3</div>
           <div class="step-text">
-            <strong>Rotate & Explore Each Floor</strong>
-            <p>Drag on screen to rotate 360° in all directions, tap floor chips to isolate levels, or tap "Rebuild from Base".</p>
+            <strong>360° Touch Rotation & Celebrate</strong>
+            <p>Drag on screen to rotate the hologram from any angle, tap Celebrate for golden confetti & chimes!</p>
           </div>
         </div>
       </div>
