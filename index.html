@@ -9,10 +9,10 @@
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
 
-  <!-- A-Frame 1.4.2 & MindAR 1.2.5 -->
+  <!-- A-Frame 1.4.2 & MindAR 1.2.5 & A-Frame Extras 6.1.1 -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -26,7 +26,7 @@
 </head>
 <body>
 
-  <!-- AR Viewport Container (MindAR attaches camera video here) -->
+  <!-- AR Viewport Container (MindAR anchors video and A-Frame canvas here) -->
   <div id="ar-container" class="ar-viewport-container">
     <a-scene
       mindar-image="imageTargetSrc: ./assets/card.mind; filterMinCF: 0.001; filterBeta: 10; warmupTolerance: 5; missTolerance: 5; autoStart: true; uiLoading: no; uiScanning: no; uiError: no;"
@@ -36,8 +36,8 @@
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false">
 
-      <a-assets timeout="10000">
-        <!-- 3D Models & Assets -->
+      <a-assets>
+        <!-- 3D Character Model -->
         <a-asset-item id="robotModel" src="./assets/robot.glb"></a-asset-item>
       </a-assets>
 
@@ -114,7 +114,7 @@
     </a-scene>
   </div>
 
-  <!-- Loading & Start Overlay Screen -->
+  <!-- Non-Blocking Initial Loading Screen -->
   <div id="loading-overlay" class="loading-overlay">
     <div class="loading-card">
       <div class="loading-spinner-wrapper">
@@ -124,39 +124,37 @@
         </div>
       </div>
       <h2>Interactive WebAR</h2>
-      <p id="loading-status">Preparing 3D scene & camera...</p>
+      <p id="loading-status">Starting camera & AR engine...</p>
       
       <div id="progress-container" class="progress-bar-container">
         <div id="progress-bar" class="progress-bar"></div>
       </div>
 
-      <!-- Start Camera Button (User-gesture for mobile policy) -->
-      <button id="btn-start-camera" class="btn-start-camera hidden">
-        <i data-lucide="camera"></i>
-        <span>Start Camera & AR</span>
+      <!-- Immediate Enter / Dismiss Button -->
+      <button id="btn-enter-ar" class="btn-primary" style="margin-top: 8px;">
+        <i data-lucide="play"></i> Enter AR Camera
       </button>
 
       <!-- Error Box (if permission denied) -->
       <div id="camera-error-box" class="camera-error-box hidden">
         <div class="error-icon"><i data-lucide="alert-triangle"></i></div>
-        <div class="error-msg" id="camera-error-text">Camera access required.</div>
+        <div class="error-msg" id="camera-error-text">Camera permission is required.</div>
         <div class="error-guide">
           <p><strong>To enable camera on Android:</strong></p>
           <ol>
-            <li>Tap the <strong>Lock / Settings icon</strong> next to the URL.</li>
-            <li>Tap <strong>Permissions</strong> or <strong>Site Settings</strong>.</li>
-            <li>Set <strong>Camera</strong> to <strong>Allow</strong>.</li>
+            <li>Tap the <strong>Lock / Settings icon</strong> in Chrome URL bar.</li>
+            <li>Tap <strong>Permissions</strong> ➔ Set <strong>Camera</strong> to <strong>Allow</strong>.</li>
             <li>Reload the page.</li>
           </ol>
         </div>
         <button id="btn-retry-camera" class="btn-secondary">
-          <i data-lucide="refresh-cw"></i> Retry
+          <i data-lucide="refresh-cw"></i> Reload Page
         </button>
       </div>
 
       <div class="loading-tips" id="loading-tip-text">
         <i data-lucide="shield-check"></i>
-        <span>Tap "Allow" when prompted for camera access.</span>
+        <span>Please allow camera access when prompted by Chrome.</span>
       </div>
     </div>
   </div>
@@ -253,15 +251,15 @@
         <button id="btn-close-modal" class="btn-close">&times;</button>
       </div>
       <div class="modal-body">
-        <p class="modal-instruction">Point your camera at this target image to see the 3D augmented reality experience:</p>
+        <p class="modal-instruction">Point your camera at this target image to activate the 3D augmented reality experience:</p>
         <div class="marker-preview-box">
           <img id="target-preview-img" src="assets/card.png" alt="AR Target Marker" class="marker-image">
         </div>
         <div class="modal-tips">
           <p><strong>💡 How to scan:</strong></p>
           <ul>
-            <li>Open this target marker on a laptop/tablet and aim this phone at it, <strong>OR</strong></li>
-            <li>Print the target marker image out on paper.</li>
+            <li>Open this target image on a laptop/tablet and aim this phone at it, <strong>OR</strong></li>
+            <li>Print the target image out on paper.</li>
           </ul>
         </div>
       </div>
@@ -295,7 +293,7 @@
           <div class="step-badge">2</div>
           <div class="step-text">
             <strong>Scan the Target Marker</strong>
-            <p>Aim your camera at the target card image in a well-lit space.</p>
+            <p>Aim your camera at the target card image in good lighting.</p>
           </div>
         </div>
         <div class="help-step">
