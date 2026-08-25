@@ -1,9 +1,8 @@
 /**
  * MindAR Interactive WebAR Application
- * Enhanced Android Video Stream Handling & On-Screen Diagnostics
+ * Full 360° 3-Axis Hologram Rotation & Touch Gestures
  */
 
-// Safe Log Buffer for On-Screen Debugging
 const debugLogs = [];
 function logDebug(msg) {
   const time = new Date().toISOString().split('T')[1].slice(0, 8);
@@ -16,7 +15,6 @@ function logDebug(msg) {
   }
 }
 
-// Initialize Lucide Icons Safely
 function initIcons() {
   try {
     if (window.lucide && typeof window.lucide.createIcons === 'function') {
@@ -29,7 +27,7 @@ function initIcons() {
 
 document.addEventListener('DOMContentLoaded', () => {
   initIcons();
-  logDebug('DOM loaded. Initializing WebAR...');
+  logDebug('DOM ready. Initializing 360° WebAR...');
 
   // DOM Elements
   const loadingOverlay = document.getElementById('loading-overlay');
@@ -42,11 +40,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnRetryCamera = document.getElementById('btn-retry-camera');
 
   const scanningGuide = document.getElementById('scanning-guide');
+  const gestureHint = document.getElementById('gesture-hint');
   const statusBanner = document.getElementById('status-banner');
   const statusText = document.getElementById('status-text');
   const arControls = document.getElementById('ar-controls');
   const targetAnchor = document.getElementById('target-anchor');
   const arCharacter = document.getElementById('ar-character');
+  const hologramRotator = document.getElementById('hologram-rotator');
   const sceneEl = document.querySelector('a-scene');
 
   // Modals & Action Buttons
@@ -65,18 +65,227 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnGithub = document.getElementById('btn-action-github');
   const btnParty = document.getElementById('btn-action-party');
 
+  // Rotation Control Buttons
+  const btnAutoRotate = document.getElementById('btn-auto-rotate');
+  const btnResetRotation = document.getElementById('btn-reset-rotation');
+  const btnRotX = document.getElementById('btn-rot-x');
+  const btnRotY = document.getElementById('btn-rot-y');
+  const btnRotZ = document.getElementById('btn-rot-z');
+
   const animationChips = document.querySelectorAll('.chip');
 
-  // Audio Context (Synthesizer)
+  // --- 3D Hologram Rotation & Scale State ---
+  let rotX = 0; // Pitch
+  let rotY = 0; // Yaw
+  let rotZ = 0; // Roll
+  let currentScale = 1.0;
+  let isAutoRotating = true;
+  let autoRotateSpeed = 0.6; // degrees per frame
+
+  function updateHologramTransform() {
+    if (hologramRotator) {
+      hologramRotator.setAttribute('rotation', `${rotX} ${rotY} ${rotZ}`);
+      hologramRotator.setAttribute('scale', `${currentScale} ${currentScale} ${currentScale}`);
+    }
+  }
+
+  // Animation Frame Loop for Smooth 360 Auto-Rotation
+  function renderLoop() {
+    if (isAutoRotating) {
+      rotY = (rotY + autoRotateSpeed) % 360;
+      updateHologramTransform();
+    }
+    requestAnimationFrame(renderLoop);
+  }
+  renderLoop();
+
+  // Rotation Button Events
+  if (btnAutoRotate) {
+    btnAutoRotate.addEventListener('click', () => {
+      playClick();
+      isAutoRotating = !isAutoRotating;
+      btnAutoRotate.classList.toggle('active', isAutoRotating);
+      btnAutoRotate.innerHTML = isAutoRotating 
+        ? '<i data-lucide="pause-circle"></i> <span>Pause Spin</span>' 
+        : '<i data-lucide="play-circle"></i> <span>Auto Spin</span>';
+      initIcons();
+    });
+  }
+
+  if (btnResetRotation) {
+    btnResetRotation.addEventListener('click', () => {
+      playClick();
+      rotX = 0;
+      rotY = 0;
+      rotZ = 0;
+      currentScale = 1.0;
+      isAutoRotating = false;
+      if (btnAutoRotate) {
+        btnAutoRotate.classList.remove('active');
+        btnAutoRotate.innerHTML = '<i data-lucide="play-circle"></i> <span>Auto Spin</span>';
+        initIcons();
+      }
+      updateHologramTransform();
+      logDebug('Hologram rotation reset to 0,0,0');
+    });
+  }
+
+  if (btnRotX) {
+    btnRotX.addEventListener('click', () => {
+      playClick();
+      isAutoRotating = false;
+      if (btnAutoRotate) btnAutoRotate.classList.remove('active');
+      rotX = (rotX + 45) % 360;
+      updateHologramTransform();
+    });
+  }
+
+  if (btnRotY) {
+    btnRotY.addEventListener('click', () => {
+      playClick();
+      isAutoRotating = false;
+      if (btnAutoRotate) btnAutoRotate.classList.remove('active');
+      rotY = (rotY + 45) % 360;
+      updateHologramTransform();
+    });
+  }
+
+  if (btnRotZ) {
+    btnRotZ.addEventListener('click', () => {
+      playClick();
+      isAutoRotating = false;
+      if (btnAutoRotate) btnAutoRotate.classList.remove('active');
+      rotZ = (rotZ + 45) % 360;
+      updateHologramTransform();
+    });
+  }
+
+  // --- Touch & Mouse 360° Gesture Controller ---
+  let isDragging = false;
+  let previousTouchX = 0;
+  let previousTouchY = 0;
+  let initialPinchDistance = 0;
+  let initialPinchAngle = 0;
+
+  function getTouchDistance(t1, t2) {
+    const dx = t1.clientX - t2.clientX;
+    const dy = t1.clientY - t2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function getTouchAngle(t1, t2) {
+    return Math.atan2(t2.clientY - t1.clientY, t2.clientX - t1.clientX) * (180 / Math.PI);
+  }
+
+  // Touch Listeners (Mobile)
+  window.addEventListener('touchstart', (e) => {
+    // Ignore touch on interactive buttons & modals
+    if (e.target.closest('button, .modal-card, .bottom-bar, .top-nav')) return;
+
+    if (e.touches.length === 1) {
+      isDragging = true;
+      isAutoRotating = false;
+      if (btnAutoRotate) btnAutoRotate.classList.remove('active');
+      previousTouchX = e.touches[0].clientX;
+      previousTouchY = e.touches[0].clientY;
+    } else if (e.touches.length === 2) {
+      isDragging = false;
+      isAutoRotating = false;
+      initialPinchDistance = getTouchDistance(e.touches[0], e.touches[1]);
+      initialPinchAngle = getTouchAngle(e.touches[0], e.touches[1]);
+    }
+  }, { passive: false });
+
+  window.addEventListener('touchmove', (e) => {
+    if (e.target.closest('button, .modal-card, .bottom-bar, .top-nav')) return;
+
+    if (e.touches.length === 1 && isDragging) {
+      const currentX = e.touches[0].clientX;
+      const currentY = e.touches[0].clientY;
+      const dx = currentX - previousTouchX;
+      const dy = currentY - previousTouchY;
+
+      // 1 Finger: Rotate Yaw (Y axis) and Pitch (X axis)
+      rotY += dx * 0.6;
+      rotX -= dy * 0.6;
+      rotY = (rotY + 360) % 360;
+      rotX = Math.max(-180, Math.min(180, rotX)); // clamp pitch
+      updateHologramTransform();
+
+      previousTouchX = currentX;
+      previousTouchY = currentY;
+      e.preventDefault();
+    } else if (e.touches.length === 2) {
+      // 2 Fingers: Pinch to Scale & Twist to Roll (Z axis)
+      const currentDist = getTouchDistance(e.touches[0], e.touches[1]);
+      const currentAng = getTouchAngle(e.touches[0], e.touches[1]);
+
+      if (initialPinchDistance > 0) {
+        const scaleFactor = currentDist / initialPinchDistance;
+        currentScale = Math.max(0.4, Math.min(2.5, currentScale * (1 + (scaleFactor - 1) * 0.15)));
+        initialPinchDistance = currentDist;
+      }
+
+      const dAngle = currentAng - initialPinchAngle;
+      rotZ = (rotZ + dAngle * 0.8) % 360;
+      initialPinchAngle = currentAng;
+
+      updateHologramTransform();
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  window.addEventListener('touchend', () => {
+    isDragging = false;
+    initialPinchDistance = 0;
+  });
+
+  // Mouse Listeners (Desktop)
+  window.addEventListener('mousedown', (e) => {
+    if (e.target.closest('button, .modal-card, .bottom-bar, .top-nav')) return;
+    isDragging = true;
+    isAutoRotating = false;
+    if (btnAutoRotate) btnAutoRotate.classList.remove('active');
+    previousTouchX = e.clientX;
+    previousTouchY = e.clientY;
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - previousTouchX;
+    const dy = e.clientY - previousTouchY;
+
+    if (e.shiftKey || e.buttons === 2) {
+      // Shift + Drag: Roll (Z axis)
+      rotZ = (rotZ + dx * 0.6) % 360;
+    } else {
+      // Standard Drag: Rotate X & Y
+      rotY = (rotY + dx * 0.6) % 360;
+      rotX = Math.max(-180, Math.min(180, rotX - dy * 0.6));
+    }
+
+    updateHologramTransform();
+    previousTouchX = e.clientX;
+    previousTouchY = e.clientY;
+  });
+
+  window.addEventListener('mouseup', () => { isDragging = false; });
+
+  // Mouse Wheel: Zoom
+  window.addEventListener('wheel', (e) => {
+    if (e.target.closest('.modal-card')) return;
+    currentScale = Math.max(0.4, Math.min(2.5, currentScale - e.deltaY * 0.001));
+    updateHologramTransform();
+  }, { passive: true });
+
+  // --- Audio Synthesizer ---
   let audioEnabled = true;
   let audioCtx = null;
 
   function initAudio() {
     if (!audioCtx) {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (AudioContext) {
-        audioCtx = new AudioContext();
-      }
+      if (AudioContext) audioCtx = new AudioContext();
     }
   }
 
@@ -85,9 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       initAudio();
       if (!audioCtx) return;
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
+      if (audioCtx.state === 'suspended') audioCtx.resume();
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.type = type;
@@ -148,28 +355,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnViewTarget) btnViewTarget.addEventListener('click', () => openModal(targetModal));
   if (btnCloseModal) btnCloseModal.addEventListener('click', () => closeModal(targetModal));
-  if (targetModal) {
-    targetModal.addEventListener('click', (e) => {
-      if (e.target === targetModal) closeModal(targetModal);
-    });
-  }
+  if (targetModal) targetModal.addEventListener('click', (e) => { if (e.target === targetModal) closeModal(targetModal); });
 
   if (btnHelp) btnHelp.addEventListener('click', () => openModal(helpModal));
   if (btnCloseHelp) btnCloseHelp.addEventListener('click', () => closeModal(helpModal));
   if (btnHelpOk) btnHelpOk.addEventListener('click', () => closeModal(helpModal));
-  if (helpModal) {
-    helpModal.addEventListener('click', (e) => {
-      if (e.target === helpModal) closeModal(helpModal);
-    });
-  }
+  if (helpModal) helpModal.addEventListener('click', (e) => { if (e.target === helpModal) closeModal(helpModal); });
 
   if (btnDebug) btnDebug.addEventListener('click', () => openModal(debugModal));
   if (btnCloseDebug) btnCloseDebug.addEventListener('click', () => closeModal(debugModal));
-  if (debugModal) {
-    debugModal.addEventListener('click', (e) => {
-      if (e.target === debugModal) closeModal(debugModal);
-    });
-  }
+  if (debugModal) debugModal.addEventListener('click', (e) => { if (e.target === debugModal) closeModal(debugModal); });
 
   // Animation Switcher
   animationChips.forEach(chip => {
@@ -238,6 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (scanningGuide) scanningGuide.classList.add('hidden');
+      if (gestureHint) gestureHint.classList.remove('hidden');
       if (arControls) arControls.classList.remove('hidden');
       if (statusBanner) {
         statusBanner.classList.remove('lost');
@@ -249,6 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
     targetAnchor.addEventListener('targetLost', () => {
       logDebug('Target Lost');
       if (scanningGuide) scanningGuide.classList.remove('hidden');
+      if (gestureHint) gestureHint.classList.add('hidden');
       if (arControls) arControls.classList.add('hidden');
       if (statusBanner) {
         statusBanner.classList.remove('found');
@@ -281,34 +478,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Ensure WebGL Transparency
   function ensureTransparentRenderer() {
     if (sceneEl && sceneEl.renderer) {
       sceneEl.renderer.setClearColor(0x000000, 0);
     }
   }
 
-  // Robust Android Video Stream Fixer
   function fixAndroidVideoFeed() {
     ensureTransparentRenderer();
     const video = document.querySelector('video');
-    if (!video) {
-      logDebug('Waiting for video element...');
-      return;
-    }
+    if (!video) return;
 
-    logDebug(`Video state: ${video.videoWidth}x${video.videoHeight}, paused: ${video.paused}`);
-
-    // If video has not started playing, trigger play
     if (video.paused) {
-      video.play().then(() => {
-        logDebug('video.play() succeeded');
-      }).catch(err => {
-        logDebug(`video.play() warning: ${err.message}`);
-      });
+      video.play().catch(() => {});
     }
 
-    // Force Android viewport dimensions if NaN or 0
     const w = window.innerWidth;
     const h = window.innerHeight;
     const videoAspect = (video.videoWidth && video.videoHeight) ? (video.videoWidth / video.videoHeight) : (w / h);
@@ -327,14 +511,12 @@ document.addEventListener('DOMContentLoaded', () => {
       targetTop = -(targetH - h) / 2;
     }
 
-    // Ensure valid non-NaN pixel values
     if (!isNaN(targetW) && targetW > 0 && !isNaN(targetH) && targetH > 0) {
       video.style.width = `${Math.round(targetW)}px`;
       video.style.height = `${Math.round(targetH)}px`;
       video.style.top = `${Math.round(targetTop)}px`;
       video.style.left = `${Math.round(targetLeft)}px`;
     } else {
-      // Fallback fullscreen cover
       video.style.width = '100vw';
       video.style.height = '100vh';
       video.style.objectFit = 'cover';
@@ -349,22 +531,19 @@ document.addEventListener('DOMContentLoaded', () => {
     video.style.opacity = '1';
   }
 
-  // Hook into A-Frame and MindAR Lifecycle
   if (sceneEl) {
     sceneEl.addEventListener('arReady', () => {
-      logDebug('MindAR arReady event fired!');
+      logDebug('MindAR arReady fired!');
       fixAndroidVideoFeed();
       dismissLoadingOverlay();
     });
 
     sceneEl.addEventListener('renderstart', () => {
-      logDebug('A-Frame renderstart event fired');
       fixAndroidVideoFeed();
       setTimeout(dismissLoadingOverlay, 300);
     });
 
     sceneEl.addEventListener('loaded', () => {
-      logDebug('A-Frame loaded event fired');
       fixAndroidVideoFeed();
       setTimeout(dismissLoadingOverlay, 500);
     });
@@ -377,14 +556,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Watch video feed continuously during initial 6 seconds
   const monitorInterval = setInterval(fixAndroidVideoFeed, 400);
   setTimeout(() => clearInterval(monitorInterval), 6000);
 
-  // Safety timeout: Dismiss loading overlay after 1.5 seconds
   setTimeout(dismissLoadingOverlay, 1500);
 
-  // Lightweight Confetti Particle System
+  // Confetti Particle System
   const canvas = document.getElementById('confetti-canvas');
   const ctx = canvas ? canvas.getContext('2d') : null;
   let particles = [];
@@ -422,15 +599,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    if (!animId) {
-      renderConfetti();
-    }
+    if (!animId) renderConfetti();
   }
 
   function renderConfetti() {
     if (!ctx) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     particles = particles.filter(p => p.alpha > 0.01);
 
     particles.forEach(p => {

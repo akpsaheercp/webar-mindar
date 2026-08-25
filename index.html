@@ -9,7 +9,7 @@
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
 
-  <!-- Smart Multi-Camera Resolver for Android & iOS (Runs before MindAR to guarantee Primary Rear RGB Camera) -->
+  <!-- Smart Multi-Camera Resolver for Android & iOS -->
   <script>
     (function() {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -20,7 +20,6 @@
               const devices = await navigator.mediaDevices.enumerateDevices();
               const videoDevices = devices.filter(d => d.kind === 'videoinput');
               
-              // On multi-camera Android devices, select primary RGB back camera (camera 0)
               const primaryBack = videoDevices.find(d => 
                 d.label.toLowerCase().includes('camera 0') || 
                 (d.label.toLowerCase().includes('back') && !d.label.toLowerCase().includes('camera 4') && !d.label.toLowerCase().includes('depth'))
@@ -106,14 +105,17 @@
           material="shader: flat; transparent: true">
         </a-ring>
 
-        <!-- 3D Animated Character Entity -->
-        <a-entity
-          id="ar-character"
-          gltf-model="#robotModel"
-          position="0 -0.25 0.1"
-          rotation="90 0 0"
-          scale="0.22 0.22 0.22"
-          animation-mixer="clip: Dance; loop: repeat; crossFadeDuration: 0.4">
+        <!-- 360-Degree Interactive Hologram Rotator Group -->
+        <a-entity id="hologram-rotator" position="0 -0.25 0.1" rotation="0 0 0" scale="1 1 1">
+          <!-- 3D Animated Character Entity -->
+          <a-entity
+            id="ar-character"
+            gltf-model="#robotModel"
+            position="0 0 0"
+            rotation="90 0 0"
+            scale="0.22 0.22 0.22"
+            animation-mixer="clip: Dance; loop: repeat; crossFadeDuration: 0.4">
+          </a-entity>
         </a-entity>
 
         <!-- Floating 3D Info Banner -->
@@ -134,7 +136,7 @@
             material="shader: flat; transparent: true">
           </a-plane>
           <a-text
-            value="WebAR Experience\nMindAR + A-Frame"
+            value="360° WebAR Hologram\nMindAR + A-Frame"
             align="center"
             color="#ffffff"
             position="0 0 0.02"
@@ -204,7 +206,7 @@
     <header class="top-nav">
       <div class="brand-badge">
         <span class="pulse-dot"></span>
-        <span class="brand-title">MindAR <span class="brand-sub">Studio</span></span>
+        <span class="brand-title">MindAR <span class="brand-sub">360° Studio</span></span>
       </div>
 
       <div class="nav-actions">
@@ -223,6 +225,12 @@
         </button>
       </div>
     </header>
+
+    <!-- Gesture 360° Hint Banner (Shows when target is locked) -->
+    <div id="gesture-hint" class="gesture-hint hidden">
+      <i data-lucide="rotate-3d"></i>
+      <span>👆 Drag to rotate 360° (X, Y, Z) • 🤏 Pinch to zoom</span>
+    </div>
 
     <!-- Scanning Reticle (Searching for Marker) -->
     <div id="scanning-guide" class="scanning-guide">
@@ -249,8 +257,34 @@
     <footer class="bottom-bar">
       <!-- Action Controls -->
       <div id="ar-controls" class="ar-controls hidden">
+        
+        <!-- 360° Hologram Rotation Controls -->
         <div class="control-group">
-          <span class="control-label">3D Robot Animations</span>
+          <div class="control-label-row">
+            <span class="control-label"><i data-lucide="rotate-cw"></i> 360° Rotation Controls</span>
+            <button id="btn-reset-rotation" class="btn-micro" title="Reset Rotation">
+              <i data-lucide="rotate-ccw"></i> Reset
+            </button>
+          </div>
+          <div class="rotation-btn-row">
+            <button id="btn-auto-rotate" class="rot-btn active">
+              <i data-lucide="play-circle"></i> <span>Auto Spin</span>
+            </button>
+            <button id="btn-rot-x" class="rot-btn" title="Pitch (+45° X)">
+              <span>Rotate X</span>
+            </button>
+            <button id="btn-rot-y" class="rot-btn" title="Yaw (+45° Y)">
+              <span>Rotate Y</span>
+            </button>
+            <button id="btn-rot-z" class="rot-btn" title="Roll (+45° Z)">
+              <span>Rotate Z</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3D Robot Animations -->
+        <div class="control-group">
+          <span class="control-label">Character Animations</span>
           <div class="chip-group">
             <button class="chip active" data-anim="Dance">🕺 Dance</button>
             <button class="chip" data-anim="Wave">👋 Wave</button>
@@ -259,22 +293,20 @@
           </div>
         </div>
 
-        <div class="control-group">
-          <span class="control-label">Interactive Actions</span>
-          <div class="action-btn-row">
-            <button id="btn-action-github" class="action-card-btn">
-              <i data-lucide="github"></i>
-              <span>GitHub</span>
-            </button>
-            <button id="btn-action-share" class="action-card-btn">
-              <i data-lucide="share-2"></i>
-              <span>Share</span>
-            </button>
-            <button id="btn-action-party" class="action-card-btn accent">
-              <i data-lucide="party-popper"></i>
-              <span>Party FX!</span>
-            </button>
-          </div>
+        <!-- Quick Actions -->
+        <div class="action-btn-row">
+          <button id="btn-action-github" class="action-card-btn">
+            <i data-lucide="github"></i>
+            <span>GitHub</span>
+          </button>
+          <button id="btn-action-share" class="action-card-btn">
+            <i data-lucide="share-2"></i>
+            <span>Share</span>
+          </button>
+          <button id="btn-action-party" class="action-card-btn accent">
+            <i data-lucide="party-popper"></i>
+            <span>Party FX!</span>
+          </button>
         </div>
       </div>
     </footer>
@@ -318,7 +350,7 @@
       <div class="modal-header">
         <div class="modal-title-group">
           <i data-lucide="info"></i>
-          <h3>How to Use WebAR</h3>
+          <h3>How to Use 360° WebAR</h3>
         </div>
         <button id="btn-close-help" class="btn-close">&times;</button>
       </div>
@@ -326,22 +358,22 @@
         <div class="help-step">
           <div class="step-badge">1</div>
           <div class="step-text">
-            <strong>Allow Camera</strong>
-            <p>Grant camera permissions when prompted by your mobile browser.</p>
+            <strong>Scan the Target Marker</strong>
+            <p>Aim your camera at the target card marker to spawn the 3D hologram.</p>
           </div>
         </div>
         <div class="help-step">
           <div class="step-badge">2</div>
           <div class="step-text">
-            <strong>Scan the Target Marker</strong>
-            <p>Aim your camera at the target card image in good lighting.</p>
+            <strong>Rotate in Full 360° (3 Axes)</strong>
+            <p><strong>Drag 1 finger</strong> horizontally or vertically to rotate in X and Y axes. <strong>Twist 2 fingers</strong> to rotate along Z axis!</p>
           </div>
         </div>
         <div class="help-step">
           <div class="step-badge">3</div>
           <div class="step-text">
-            <strong>Interact in Augmented Reality</strong>
-            <p>Watch the 3D character appear! Tap bottom animation chips and buttons to interact in real-time.</p>
+            <strong>Pinch to Zoom & Rotate Buttons</strong>
+            <p>Pinch with 2 fingers to scale the 3D model up/down, or use the bottom rotation buttons.</p>
           </div>
         </div>
       </div>
