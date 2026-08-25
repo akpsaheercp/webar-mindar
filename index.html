@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Interactive WebAR Experience | MindAR</title>
-  <meta name="description" content="Next-Generation WebAR Experience built with MindAR and A-Frame.">
+  <title>3D Architectural WebAR | Flat Building from Foundation</title>
+  <meta name="description" content="Augmented Reality experience showing a modern apartment building constructing from its QR code foundation.">
 
   <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏗️</text></svg>">
 
   <!-- Smart Multi-Camera Resolver for Android & iOS -->
   <script>
@@ -46,10 +46,9 @@
     })();
   </script>
 
-  <!-- A-Frame 1.4.2 & MindAR 1.2.5 & A-Frame Extras 6.1.1 -->
+  <!-- A-Frame 1.4.2 & MindAR 1.2.5 -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -73,82 +72,134 @@
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false">
 
-      <a-assets>
-        <!-- 3D Character Model -->
-        <a-asset-item id="robotModel" src="./assets/robot.glb"></a-asset-item>
-      </a-assets>
-
       <!-- Camera -->
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- Target Anchor 0 -->
+      <!-- Target Anchor 0 (QR Code Foundation Base) -->
       <a-entity id="target-anchor" mindar-image-target="targetIndex: 0">
         
-        <!-- Base Hologram Platform Ring -->
-        <a-ring
-          position="0 0 0.01"
-          radius-inner="0.35"
-          radius-outer="0.48"
-          color="#00f2fe"
-          opacity="0.85"
-          rotation="0 0 0"
-          material="shader: flat; transparent: true">
-        </a-ring>
+        <!-- 3D Hologram Rotator Group (Enables full 360° 3-Axis Drag Rotation) -->
+        <a-entity id="hologram-rotator" position="0 0 0" rotation="90 0 0" scale="1 1 1">
 
-        <!-- Inner Accent Ring -->
-        <a-ring
-          position="0 0 0.02"
-          radius-inner="0.25"
-          radius-outer="0.3"
-          color="#4facfe"
-          opacity="0.6"
-          material="shader: flat; transparent: true">
-        </a-ring>
-
-        <!-- 360-Degree Interactive Hologram Rotator Group -->
-        <a-entity id="hologram-rotator" position="0 -0.25 0.1" rotation="0 0 0" scale="1 1 1">
-          <!-- 3D Animated Character Entity -->
-          <a-entity
-            id="ar-character"
-            gltf-model="#robotModel"
-            position="0 0 0"
-            rotation="90 0 0"
-            scale="0.22 0.22 0.22"
-            animation-mixer="clip: Dance; loop: repeat; crossFadeDuration: 0.4">
+          <!-- ================= 1. FOUNDATION LEVEL (Directly on QR Code) ================= -->
+          <a-entity id="building-foundation">
+            <!-- Concrete Ground Footprint Slab -->
+            <a-box position="0 -0.02 0" width="0.75" height="0.04" depth="0.75" color="#1e293b" material="roughness: 0.8; metalness: 0.2"></a-box>
+            <!-- Foundation Steel Beams Grid -->
+            <a-box position="0 0.005 0" width="0.72" height="0.01" depth="0.72" color="#00f2fe" opacity="0.4" material="wireframe: true"></a-box>
+            <!-- 4 Heavy Concrete Foundation Corner Footings -->
+            <a-box position="-0.3 0.04 -0.3" width="0.1" height="0.08" depth="0.1" color="#334155"></a-box>
+            <a-box position="0.3 0.04 -0.3" width="0.1" height="0.08" depth="0.1" color="#334155"></a-box>
+            <a-box position="-0.3 0.04 0.3" width="0.1" height="0.08" depth="0.1" color="#334155"></a-box>
+            <a-box position="0.3 0.04 0.3" width="0.1" height="0.08" depth="0.1" color="#334155"></a-box>
+            <!-- Glowing Hologram Foundation Grid Ring -->
+            <a-ring position="0 0.001 0" rotation="-90 0 0" radius-inner="0.45" radius-outer="0.55" color="#00f2fe" opacity="0.8" material="shader: flat; transparent: true"></a-ring>
           </a-entity>
+
+          <!-- ================= 2. GROUND FLOOR (Entrance Lobby & Main Pillars) ================= -->
+          <a-entity id="floor-ground" position="0 0 0" class="building-tier">
+            <!-- 4 Main Support Columns -->
+            <a-cylinder position="-0.28 0.12 -0.28" radius="0.025" height="0.16" color="#64748b"></a-cylinder>
+            <a-cylinder position="0.28 0.12 -0.28" radius="0.025" height="0.16" color="#64748b"></a-cylinder>
+            <a-cylinder position="-0.28 0.12 0.28" radius="0.025" height="0.16" color="#64748b"></a-cylinder>
+            <a-cylinder position="0.28 0.12 0.28" radius="0.025" height="0.16" color="#64748b"></a-cylinder>
+            <!-- Central Lobby Glass Core -->
+            <a-box position="0 0.12 0" width="0.48" height="0.16" depth="0.48" color="#38bdf8" opacity="0.4" material="transparent: true; roughness: 0.1"></a-box>
+            <!-- Main Entrance Glass Canopy -->
+            <a-box position="0 0.1 0.28" width="0.24" height="0.01" depth="0.12" color="#00f2fe" opacity="0.8"></a-box>
+            <!-- Lobby Concrete Ceiling / First Floor Base Slab -->
+            <a-box position="0 0.21 0" width="0.68" height="0.02" depth="0.68" color="#334155"></a-box>
+          </a-entity>
+
+          <!-- ================= 3. FLOOR 1 (Residential Apartment Level 1) ================= -->
+          <a-entity id="floor-1" position="0 0.22 0" class="building-tier">
+            <!-- Apartment Core Structure -->
+            <a-box position="0 0.1 0" width="0.62" height="0.18" depth="0.62" color="#1e293b"></a-box>
+            <!-- Panoramic Apartment Glass Windows -->
+            <a-box position="0 0.1 0.315" width="0.5" height="0.12" depth="0.01" color="#38bdf8" opacity="0.6" material="transparent: true"></a-box>
+            <a-box position="-0.315 0.1 0" width="0.01" height="0.12" depth="0.5" color="#38bdf8" opacity="0.6" material="transparent: true"></a-box>
+            <a-box position="0.315 0.1 0" width="0.01" height="0.12" depth="0.5" color="#38bdf8" opacity="0.6" material="transparent: true"></a-box>
+            <!-- Balcony with Glass Railing (Front) -->
+            <a-box position="0 0.04 0.36" width="0.4" height="0.01" depth="0.1" color="#475569"></a-box>
+            <a-box position="0 0.08 0.41" width="0.4" height="0.07" depth="0.005" color="#00f2fe" opacity="0.7" material="transparent: true"></a-box>
+            <!-- Floor 1 Ceiling / Floor 2 Slab -->
+            <a-box position="0 0.20 0" width="0.68" height="0.02" depth="0.68" color="#334155"></a-box>
+          </a-entity>
+
+          <!-- ================= 4. FLOOR 2 (Residential Apartment Level 2) ================= -->
+          <a-entity id="floor-2" position="0 0.43 0" class="building-tier">
+            <!-- Apartment Core Structure -->
+            <a-box position="0 0.1 0" width="0.62" height="0.18" depth="0.62" color="#0f172a"></a-box>
+            <!-- Modern Accent Architectural Fins (White/Wood) -->
+            <a-box position="-0.32 0.1 0.1" width="0.02" height="0.18" depth="0.1" color="#f8fafc"></a-box>
+            <a-box position="0.32 0.1 -0.1" width="0.02" height="0.18" depth="0.1" color="#f8fafc"></a-box>
+            <!-- Glass Windows with Warm Interior Glow -->
+            <a-box position="0 0.1 0.315" width="0.5" height="0.12" depth="0.01" color="#fbbf24" opacity="0.5" material="transparent: true"></a-box>
+            <a-box position="-0.315 0.1 0" width="0.01" height="0.12" depth="0.5" color="#38bdf8" opacity="0.6" material="transparent: true"></a-box>
+            <!-- Side Balcony with Railing -->
+            <a-box position="0.36 0.04 0" width="0.1" height="0.01" depth="0.4" color="#475569"></a-box>
+            <a-box position="0.41 0.08 0" width="0.005" height="0.07" depth="0.4" color="#00f2fe" opacity="0.7" material="transparent: true"></a-box>
+            <!-- Floor 2 Ceiling / Floor 3 Slab -->
+            <a-box position="0 0.20 0" width="0.68" height="0.02" depth="0.68" color="#334155"></a-box>
+          </a-entity>
+
+          <!-- ================= 5. FLOOR 3 (Luxury Penthouse Suite) ================= -->
+          <a-entity id="floor-3" position="0 0.64 0" class="building-tier">
+            <!-- Penthouse Sleek Stepped Core -->
+            <a-box position="0 0.09 0" width="0.56" height="0.16" depth="0.56" color="#1e293b"></a-box>
+            <!-- Corner Floor-to-Ceiling Panoramic Glass -->
+            <a-box position="0.1 0.09 0.285" width="0.34" height="0.14" depth="0.01" color="#00f2fe" opacity="0.7" material="transparent: true"></a-box>
+            <a-box position="-0.1 0.09 0.285" width="0.34" height="0.14" depth="0.01" color="#00f2fe" opacity="0.7" material="transparent: true"></a-box>
+            <!-- Wrap-around Terrace Balcony -->
+            <a-box position="0 0.03 0.32" width="0.58" height="0.01" depth="0.1" color="#475569"></a-box>
+            <!-- Penthouse Roof Slab -->
+            <a-box position="0 0.18 0" width="0.64" height="0.02" depth="0.64" color="#0f172a"></a-box>
+          </a-entity>
+
+          <!-- ================= 6. ROOFTOP (Infinity Pool, Garden & Pergola) ================= -->
+          <a-entity id="floor-rooftop" position="0 0.83 0" class="building-tier">
+            <!-- Rooftop Terrace Base -->
+            <a-box position="0 0.01 0" width="0.6" height="0.02" depth="0.6" color="#334155"></a-box>
+            <!-- Infinity Swimming Pool (Glowing Blue Water) -->
+            <a-box position="-0.12 0.03 -0.1" width="0.25" height="0.02" depth="0.3" color="#00f2fe" opacity="0.85" material="roughness: 0.1"></a-box>
+            <!-- Modern Architectural Wooden Pergola Canopy -->
+            <a-box position="0.15 0.08 0.1" width="0.22" height="0.01" depth="0.22" color="#d97706"></a-box>
+            <a-cylinder position="0.05 0.04 0.0" radius="0.008" height="0.08" color="#64748b"></a-cylinder>
+            <a-cylinder position="0.25 0.04 0.0" radius="0.008" height="0.08" color="#64748b"></a-cylinder>
+            <a-cylinder position="0.05 0.04 0.2" radius="0.008" height="0.08" color="#64748b"></a-cylinder>
+            <a-cylinder position="0.25 0.04 0.2" radius="0.008" height="0.08" color="#64748b"></a-cylinder>
+            <!-- Rooftop Garden Planter Greenery -->
+            <a-box position="-0.15 0.03 0.18" width="0.2" height="0.03" depth="0.08" color="#10b981"></a-box>
+            <!-- Communications Mast with Blinking Beacon -->
+            <a-cylinder position="0.2 0.14 -0.2" radius="0.005" height="0.2" color="#94a3b8"></a-cylinder>
+            <a-sphere id="beacon-light" position="0.2 0.24 -0.2" radius="0.012" color="#ff007f" material="emissive: #ff007f; emissiveIntensity: 2"></a-sphere>
+          </a-entity>
+
+          <!-- ================= 7. BLUEPRINT LASER SCANNER RING ================= -->
+          <a-ring id="construction-laser" position="0 0.02 0" rotation="-90 0 0" radius-inner="0.36" radius-outer="0.44" color="#00f2fe" opacity="0.9" material="shader: flat; transparent: true"></a-ring>
+
         </a-entity>
 
-        <!-- Floating 3D Info Banner -->
-        <a-entity position="0 0.45 0.15" rotation="0 0 0">
-          <a-plane
-            width="0.8"
-            height="0.2"
-            color="#0f172a"
-            opacity="0.9"
-            material="shader: flat; transparent: true">
-          </a-plane>
-          <a-plane
-            width="0.82"
-            height="0.22"
-            position="0 0 -0.005"
-            color="#00f2fe"
-            opacity="0.8"
-            material="shader: flat; transparent: true">
-          </a-plane>
+        <!-- Floating Architectural Info Banner -->
+        <a-entity position="0 0.7 0.15" rotation="0 0 0">
+          <a-plane width="0.85" height="0.22" color="#0f172a" opacity="0.92" material="shader: flat; transparent: true"></a-plane>
+          <a-plane width="0.87" height="0.24" position="0 0 -0.005" color="#00f2fe" opacity="0.85" material="shader: flat; transparent: true"></a-plane>
           <a-text
-            value="360° WebAR Hologram\nMindAR + A-Frame"
+            id="ar-info-text"
+            value="MODERN RESIDENCY\nAR Architectural Foundation"
             align="center"
             color="#ffffff"
             position="0 0 0.02"
-            scale="0.32 0.32 0.32"
+            scale="0.3"
             font="https://cdn.aframe.io/fonts/DejaVu-sdf.fnt">
           </a-text>
         </a-entity>
 
-        <!-- Scene Lighting -->
-        <a-light type="ambient" intensity="1.4" color="#ffffff"></a-light>
-        <a-light type="directional" position="1 2 2" intensity="1.8" color="#00f2fe"></a-light>
-        <a-light type="directional" position="-1 -2 2" intensity="1.2" color="#ff007f"></a-light>
+        <!-- Dynamic Architectural Lighting -->
+        <a-light type="ambient" intensity="1.5" color="#ffffff"></a-light>
+        <a-light id="sun-light" type="directional" position="2 4 3" intensity="2.0" color="#f8fafc"></a-light>
+        <a-light id="accent-light" type="directional" position="-2 -3 2" intensity="1.2" color="#00f2fe"></a-light>
+        <a-light id="warm-light" type="point" position="0 0.4 0.5" intensity="1.0" color="#fbbf24" distance="2"></a-light>
 
       </a-entity>
     </a-scene>
@@ -160,11 +211,11 @@
       <div class="loading-spinner-wrapper">
         <div id="loading-ring" class="loading-ring"></div>
         <div class="loading-icon">
-          <i data-lucide="sparkles"></i>
+          <i data-lucide="building-2"></i>
         </div>
       </div>
-      <h2>Interactive WebAR</h2>
-      <p id="loading-status">Starting camera & AR engine...</p>
+      <h2>Architectural WebAR</h2>
+      <p id="loading-status">Starting camera & building engine...</p>
       
       <div id="progress-container" class="progress-bar-container">
         <div id="progress-bar" class="progress-bar"></div>
@@ -194,7 +245,7 @@
 
       <div class="loading-tips" id="loading-tip-text">
         <i data-lucide="shield-check"></i>
-        <span>Please allow camera access when prompted by Chrome.</span>
+        <span>Point camera at QR code base to construct apartment building.</span>
       </div>
     </div>
   </div>
@@ -206,19 +257,19 @@
     <header class="top-nav">
       <div class="brand-badge">
         <span class="pulse-dot"></span>
-        <span class="brand-title">MindAR <span class="brand-sub">360° Studio</span></span>
+        <span class="brand-title">Apartment <span class="brand-sub">AR Builder</span></span>
       </div>
 
       <div class="nav-actions">
-        <button id="btn-debug" class="btn-icon" title="View Diagnostics">
-          <i data-lucide="terminal"></i>
+        <button id="btn-lighting" class="btn-icon" title="Toggle Day/Night Mode">
+          <i data-lucide="sun"></i>
         </button>
         <button id="btn-audio" class="btn-icon" title="Toggle Sound">
           <i data-lucide="volume-2"></i>
         </button>
-        <button id="btn-view-target" class="btn-icon btn-highlight" title="View Target Marker">
+        <button id="btn-view-target" class="btn-icon btn-highlight" title="View Target QR Marker">
           <i data-lucide="qr-code"></i>
-          <span class="btn-text">View Marker</span>
+          <span class="btn-text">View QR Base</span>
         </button>
         <button id="btn-help" class="btn-icon" title="Instructions">
           <i data-lucide="help-circle"></i>
@@ -226,10 +277,10 @@
       </div>
     </header>
 
-    <!-- Gesture 360° Hint Banner (Shows when target is locked) -->
+    <!-- Gesture 360° Hint Banner -->
     <div id="gesture-hint" class="gesture-hint hidden">
       <i data-lucide="rotate-3d"></i>
-      <span>👆 Drag to rotate 360° (X, Y, Z) • 🤏 Pinch to zoom</span>
+      <span>👆 Drag to rotate 360° (X, Y, Z) • 🤏 Pinch to scale</span>
     </div>
 
     <!-- Scanning Reticle (Searching for Marker) -->
@@ -242,7 +293,7 @@
         <div class="reticle-laser"></div>
         <div class="reticle-prompt">
           <i data-lucide="scan"></i>
-          <span>Point camera at target image</span>
+          <span>Aim camera at QR foundation base</span>
         </div>
       </div>
     </div>
@@ -250,7 +301,7 @@
     <!-- Tracking Status Banner -->
     <div id="status-banner" class="status-banner lost">
       <span class="status-indicator"></span>
-      <span id="status-text">Searching for Target Marker...</span>
+      <span id="status-text">Searching for QR Foundation Base...</span>
     </div>
 
     <!-- Bottom Controls & Interaction Bar -->
@@ -258,10 +309,29 @@
       <!-- Action Controls -->
       <div id="ar-controls" class="ar-controls hidden">
         
+        <!-- Construction Stage Player Controls -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span class="control-label"><i data-lucide="hammer"></i> Building Construction Stage</span>
+            <button id="btn-replay-build" class="btn-micro accent" title="Replay Construction from Foundation">
+              <i data-lucide="refresh-cw"></i> Rebuild from Base
+            </button>
+          </div>
+          <div class="chip-group">
+            <button class="chip active" data-floor="all">🏙️ Full Tower</button>
+            <button class="chip" data-floor="foundation">🧱 Foundation</button>
+            <button class="chip" data-floor="ground">🚪 Lobby</button>
+            <button class="chip" data-floor="floor1">🏠 Floor 1</button>
+            <button class="chip" data-floor="floor2">🏠 Floor 2</button>
+            <button class="chip" data-floor="floor3">👑 Penthouse</button>
+            <button class="chip" data-floor="rooftop">🏊 Rooftop Pool</button>
+          </div>
+        </div>
+
         <!-- 360° Hologram Rotation Controls -->
         <div class="control-group">
           <div class="control-label-row">
-            <span class="control-label"><i data-lucide="rotate-cw"></i> 360° Rotation Controls</span>
+            <span class="control-label"><i data-lucide="rotate-cw"></i> 360° 3D Rotation</span>
             <button id="btn-reset-rotation" class="btn-micro" title="Reset Rotation">
               <i data-lucide="rotate-ccw"></i> Reset
             </button>
@@ -282,17 +352,6 @@
           </div>
         </div>
 
-        <!-- 3D Robot Animations -->
-        <div class="control-group">
-          <span class="control-label">Character Animations</span>
-          <div class="chip-group">
-            <button class="chip active" data-anim="Dance">🕺 Dance</button>
-            <button class="chip" data-anim="Wave">👋 Wave</button>
-            <button class="chip" data-anim="Jump">🦘 Jump</button>
-            <button class="chip" data-anim="Idle">🧘 Idle</button>
-          </div>
-        </div>
-
         <!-- Quick Actions -->
         <div class="action-btn-row">
           <button id="btn-action-github" class="action-card-btn">
@@ -305,7 +364,7 @@
           </button>
           <button id="btn-action-party" class="action-card-btn accent">
             <i data-lucide="party-popper"></i>
-            <span>Party FX!</span>
+            <span>Celebrate!</span>
           </button>
         </div>
       </div>
@@ -313,32 +372,32 @@
 
   </div>
 
-  <!-- Target Marker Modal -->
+  <!-- Target QR Marker Modal -->
   <div id="target-modal" class="modal-overlay hidden">
     <div class="modal-card">
       <div class="modal-header">
         <div class="modal-title-group">
-          <i data-lucide="image"></i>
-          <h3>Target Marker Image</h3>
+          <i data-lucide="qr-code"></i>
+          <h3>QR Code Foundation Marker</h3>
         </div>
         <button id="btn-close-modal" class="btn-close">&times;</button>
       </div>
       <div class="modal-body">
-        <p class="modal-instruction">Point your camera at this target image to activate the 3D augmented reality experience:</p>
+        <p class="modal-instruction">Point your camera at this QR code base to build the 3D apartment from the ground up:</p>
         <div class="marker-preview-box">
-          <img id="target-preview-img" src="assets/card.png" alt="AR Target Marker" class="marker-image">
+          <img id="target-preview-img" src="assets/card.png" alt="QR Foundation Base Marker" class="marker-image">
         </div>
         <div class="modal-tips">
-          <p><strong>💡 How to scan:</strong></p>
+          <p><strong>💡 How to test:</strong></p>
           <ul>
-            <li>Open this target image on a laptop/tablet and aim this phone at it, <strong>OR</strong></li>
-            <li>Print the target image out on paper.</li>
+            <li>Open this marker image on a laptop/tablet/paper and point your phone at the QR code base.</li>
+            <li>Watch the pillars, floors, and penthouse materialize step-by-step!</li>
           </ul>
         </div>
       </div>
       <div class="modal-footer">
-        <a href="assets/card.png" download="ar-target-marker.png" class="btn-primary">
-          <i data-lucide="download"></i> Download Marker Image
+        <a href="assets/card.png" download="apartment-qr-foundation-marker.png" class="btn-primary">
+          <i data-lucide="download"></i> Download QR Marker
         </a>
       </div>
     </div>
@@ -350,7 +409,7 @@
       <div class="modal-header">
         <div class="modal-title-group">
           <i data-lucide="info"></i>
-          <h3>How to Use 360° WebAR</h3>
+          <h3>How 3D AR Building Works</h3>
         </div>
         <button id="btn-close-help" class="btn-close">&times;</button>
       </div>
@@ -358,48 +417,27 @@
         <div class="help-step">
           <div class="step-badge">1</div>
           <div class="step-text">
-            <strong>Scan the Target Marker</strong>
-            <p>Aim your camera at the target card marker to spawn the 3D hologram.</p>
+            <strong>Scan the QR Code Base</strong>
+            <p>Aim your camera at the QR code blueprint marker to establish the ground foundation.</p>
           </div>
         </div>
         <div class="help-step">
           <div class="step-badge">2</div>
           <div class="step-text">
-            <strong>Rotate in Full 360° (3 Axes)</strong>
-            <p><strong>Drag 1 finger</strong> horizontally or vertically to rotate in X and Y axes. <strong>Twist 2 fingers</strong> to rotate along Z axis!</p>
+            <strong>Watch the Building Construct</strong>
+            <p>The foundation slab, columns, residential floors, penthouse, and rooftop pool build up sequentially in 3D!</p>
           </div>
         </div>
         <div class="help-step">
           <div class="step-badge">3</div>
           <div class="step-text">
-            <strong>Pinch to Zoom & Rotate Buttons</strong>
-            <p>Pinch with 2 fingers to scale the 3D model up/down, or use the bottom rotation buttons.</p>
+            <strong>Rotate & Explore Each Floor</strong>
+            <p>Drag on screen to rotate 360° in all directions, tap floor chips to isolate levels, or tap "Rebuild from Base".</p>
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button id="btn-help-ok" class="btn-primary">Got it!</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Diagnostics Log Modal -->
-  <div id="debug-modal" class="modal-overlay hidden">
-    <div class="modal-card">
-      <div class="modal-header">
-        <div class="modal-title-group">
-          <i data-lucide="terminal"></i>
-          <h3>Diagnostics & Logs</h3>
-        </div>
-        <button id="btn-close-debug" class="btn-close">&times;</button>
-      </div>
-      <div class="modal-body">
-        <pre id="debug-log-content" style="background: #020617; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 0.75rem; color: #38bdf8; max-height: 200px; overflow-y: auto; white-space: pre-wrap; word-break: break-all;">No logs yet</pre>
-      </div>
-      <div class="modal-footer">
-        <button onclick="window.location.reload()" class="btn-primary">
-          <i data-lucide="refresh-cw"></i> Reload
-        </button>
       </div>
     </div>
   </div>

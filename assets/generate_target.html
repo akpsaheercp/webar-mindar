@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Target Generator</title>
+</head>
+<body style="margin:0; background:#fff;">
+  <canvas id="posterCanvas" width="800" height="1000"></canvas>
+  <script>
+    const canvas = document.getElementById('posterCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Draw Modern Architectural Blueprint Poster Background
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, 800, 1000);
+
+    // Draw Grid Lines (Architecture Blueprint)
+    ctx.strokeStyle = 'rgba(0, 242, 254, 0.15)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x <= 800; x += 40) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 1000); ctx.stroke();
+    }
+    for (let y = 0; y <= 1000; y += 40) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(800, y); ctx.stroke();
+    }
+
+    // Top Header Banner
+    ctx.fillStyle = '#00f2fe';
+    ctx.font = 'bold 36px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('MODERN RESIDENCY', 400, 70);
+
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '600 20px sans-serif';
+    ctx.fillText('3D AR ARCHITECTURAL FOUNDATION', 400, 105);
+
+    // Diagonal Accent Frame
+    ctx.strokeStyle = '#00f2fe';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(60, 140, 680, 680);
+
+    // Corner Markings for High-Contrast AR Feature Detection
+    const cornerSize = 40;
+    ctx.fillStyle = '#00f2fe';
+    // Top Left
+    ctx.fillRect(60, 140, cornerSize, 6);
+    ctx.fillRect(60, 140, 6, cornerSize);
+    // Top Right
+    ctx.fillRect(740 - cornerSize, 140, cornerSize, 6);
+    ctx.fillRect(734, 140, 6, cornerSize);
+    // Bottom Left
+    ctx.fillRect(60, 814, cornerSize, 6);
+    ctx.fillRect(60, 820 - cornerSize, 6, cornerSize);
+    // Bottom Right
+    ctx.fillRect(740 - cornerSize, 814, cornerSize, 6);
+    ctx.fillRect(734, 820 - cornerSize, 6, cornerSize);
+
+    // Draw QR Code in Center
+    const qrImg = new Image();
+    qrImg.crossOrigin = 'anonymous';
+    qrImg.onload = () => {
+      // White Background for QR
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(100, 180, 600, 600);
+      ctx.drawImage(qrImg, 120, 200, 560, 560);
+
+      // Bottom Instructions
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 24px sans-serif';
+      ctx.fillText('SCAN WITH CAMERA TO BUILD IN AR', 400, 880);
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '16px sans-serif';
+      ctx.fillText('Point your camera at this QR base to watch the building rise', 400, 920);
+
+      window.posterReady = true;
+    };
+    qrImg.src = 'qrcode_target.png';
+  </script>
+</body>
+</html>

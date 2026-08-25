@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MindAR Compiler</title>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image.prod.js"></script>
+</head>
+<body>
+  <h2>Compiling MindAR Target...</h2>
+  <div id="status">Loading...</div>
+  <canvas id="posterCanvas" width="800" height="1000" style="display:none;"></canvas>
+  <img id="previewImg" style="max-width:300px; display:block; margin:20px 0;"/>
+
+  <script>
+    async function run() {
+      const status = document.getElementById('status');
+      const canvas = document.getElementById('posterCanvas');
+      const ctx = canvas.getContext('2d');
+
+      // 1. Draw Poster
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 0, 800, 1000);
+
+      // Blueprint Grid
+      ctx.strokeStyle = 'rgba(0, 242, 254, 0.2)';
+      ctx.lineWidth = 1.5;
+      for (let x = 0; x <= 800; x += 40) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 1000); ctx.stroke();
+      }
+      for (let y = 0; y <= 1000; y += 40) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(800, y); ctx.stroke();
+      }
+
+      // Banner Header
+      ctx.fillStyle = '#00f2fe';
+      ctx.font = 'bold 36px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('MODERN RESIDENCY', 400, 70);
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '600 20px sans-serif';
+      ctx.fillText('3D AR ARCHITECTURAL FOUNDATION', 400, 105);
+
+      // Neon Frame
+      ctx.strokeStyle = '#00f2fe';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(60, 140, 680, 680);
+
+      // High-contrast corners
+      const cs = 50;
+      ctx.fillStyle = '#00f2fe';
+      ctx.fillRect(60, 140, cs, 8); ctx.fillRect(60, 140, 8, cs);
+      ctx.fillRect(740 - cs, 140, cs, 8); ctx.fillRect(732, 140, 8, cs);
+      ctx.fillRect(60, 812, cs, 8); ctx.fillRect(60, 820 - cs, 8, cs);
+      ctx.fillRect(740 - cs, 812, cs, 8); ctx.fillRect(732, 820 - cs, 8, cs);
+
+      // Load QR Code
+      const qrImg = new Image();
+      qrImg.crossOrigin = 'anonymous';
+      await new Promise((resolve, reject) => {
+        qrImg.onload = resolve;
+        qrImg.onerror = reject;
+        qrImg.src = 'qrcode_target.png';
+      });
+
+      // White box for QR code
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(100, 180, 600, 600);
+      ctx.drawImage(qrImg, 120, 200, 560, 560);
+
+      // Bottom Callouts
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 24px sans-serif';
+      ctx.fillText('SCAN WITH CAMERA TO BUILD IN AR', 400, 880);
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '16px sans-serif';
+      ctx.fillText('Point AR Camera at this QR base to construct building', 400, 920);
+
+      const targetDataUrl = canvas.toDataURL('image/png');
+      const preview = document.getElementById('previewImg');
+      preview.src = targetDataUrl;
+
+      // 2. Compile with MindAR Compiler
+      status.textContent = 'Initializing MindAR Compiler...';
+      const compiler = new MINDAR.IMAGE.Compiler();
+
+      const imgToCompile = new Image();
+      await new Promise(r => { imgToCompile.onload = r; imgToCompile.src = targetDataUrl; });
+
+      status.textContent = 'Extracting feature points & compiling multiscale pyramids...';
+      await compiler.compileImageTargets([imgToCompile], (progress) => {
+        status.textContent = `Compiling progress: ${Math.round(progress)}%`;
+      });
+
+      status.textContent = 'Exporting .mind binary buffer...';
+      const buffer = await compiler.exportData();
+
+      // Convert buffer to Base64 for extraction
+      let binary = '';
+      const bytes = new Uint8Array(buffer);
+      for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      window.compiledMindBase64 = btoa(binary);
+      window.targetPngBase64 = targetDataUrl;
+      window.compileDone = true;
+      status.textContent = 'Compile SUCCESS!';
+      console.log('COMPILE_SUCCESS');
+    }
+    window.addEventListener('DOMContentLoaded', run);
+  </script>
+</body>
+</html>
