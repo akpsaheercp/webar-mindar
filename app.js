@@ -1,6 +1,6 @@
 /**
  * MindAR Interactive WebAR Application
- * Fail-safe loading, Android/iOS Camera Support, Event Handlers
+ * Fail-safe loading, Camera Video Verification, Android/iOS Support
  */
 
 // Initialize Lucide Icons Safely
@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Camera & Loading Overlay Dismissal (NEVER GET STUCK)
+  // Camera & Loading Overlay Dismissal
   function dismissLoadingOverlay() {
     if (loadingOverlay && !loadingOverlay.classList.contains('hidden')) {
       if (progressBar) progressBar.style.width = '100%';
@@ -246,6 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
       initAudio();
       playClick();
       dismissLoadingOverlay();
+      ensureVideoPlaying();
     });
   }
 
@@ -255,21 +256,45 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Ensure WebGL Transparency & Video Playback
+  function ensureTransparentRenderer() {
+    if (sceneEl && sceneEl.renderer) {
+      sceneEl.renderer.setClearColor(0x000000, 0);
+    }
+  }
+
+  function ensureVideoPlaying() {
+    const video = document.querySelector('video');
+    if (video) {
+      if (video.paused) {
+        video.play().catch(e => console.log('video.play() caught:', e));
+      }
+      video.style.opacity = '1';
+      video.style.visibility = 'visible';
+    }
+  }
+
   // Hook into A-Frame and MindAR Lifecycle
   if (sceneEl) {
     sceneEl.addEventListener('arReady', () => {
       console.log('MindAR arReady fired');
+      ensureTransparentRenderer();
+      ensureVideoPlaying();
       dismissLoadingOverlay();
     });
 
     sceneEl.addEventListener('renderstart', () => {
       console.log('A-Frame renderstart fired');
-      setTimeout(dismissLoadingOverlay, 500);
+      ensureTransparentRenderer();
+      ensureVideoPlaying();
+      setTimeout(dismissLoadingOverlay, 400);
     });
 
     sceneEl.addEventListener('loaded', () => {
       console.log('A-Frame loaded fired');
-      setTimeout(dismissLoadingOverlay, 800);
+      ensureTransparentRenderer();
+      ensureVideoPlaying();
+      setTimeout(dismissLoadingOverlay, 600);
     });
 
     sceneEl.addEventListener('arError', (event) => {
@@ -280,8 +305,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Absolute safety timeout: Dismiss loading overlay after 1.8 seconds so it NEVER blocks user
-  setTimeout(dismissLoadingOverlay, 1800);
+  // Check periodically during first 4 seconds to guarantee video is playing and background is clear
+  const checkInterval = setInterval(() => {
+    ensureTransparentRenderer();
+    ensureVideoPlaying();
+  }, 500);
+  setTimeout(() => clearInterval(checkInterval), 4000);
+
+  // Safety timeout: Dismiss loading overlay after 1.5 seconds
+  setTimeout(dismissLoadingOverlay, 1500);
 
   // Lightweight Confetti Particle System
   const canvas = document.getElementById('confetti-canvas');

@@ -7,8 +7,8 @@
   --accent-glow: rgba(255, 0, 127, 0.4);
   --success: #10b981;
   --success-glow: rgba(16, 185, 129, 0.4);
-  --bg-glass: rgba(15, 23, 42, 0.8);
-  --bg-glass-hover: rgba(30, 41, 59, 0.9);
+  --bg-glass: rgba(15, 23, 42, 0.85);
+  --bg-glass-hover: rgba(30, 41, 59, 0.95);
   --border-glass: rgba(255, 255, 255, 0.15);
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
@@ -28,6 +28,7 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* CRITICAL: html, body, and containers MUST be transparent so camera video at z-index -2 is visible */
 html, body {
   margin: 0;
   padding: 0;
@@ -36,12 +37,12 @@ html, body {
   overflow: hidden;
   position: relative;
   font-family: var(--font-main);
-  background-color: #000;
+  background: transparent !important;
+  background-color: transparent !important;
   color: var(--text-main);
 }
 
 /* --- AR Viewport Container --- */
-/* MindAR automatically appends the camera video and aligns A-Frame canvas inside this container */
 .ar-viewport-container {
   position: absolute;
   top: 0;
@@ -49,7 +50,13 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background: transparent !important;
   z-index: 1;
+}
+
+/* Ensure A-Frame WebGL Canvas is transparent */
+.a-canvas {
+  background: transparent !important;
 }
 
 /* --- UI Container Layer --- */
@@ -595,7 +602,9 @@ header, footer, button, .modal-card, .status-banner {
 .loading-overlay {
   position: fixed;
   inset: 0;
-  background: #090d16;
+  background: rgba(9, 13, 22, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   z-index: 100;
   display: flex;
   align-items: center;
@@ -680,34 +689,6 @@ header, footer, button, .modal-card, .status-banner {
   background: linear-gradient(90deg, var(--primary), var(--secondary));
   border-radius: var(--radius-full);
   transition: width 0.4s ease;
-}
-
-.btn-start-camera {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  color: #020617;
-  border: none;
-  padding: 14px 28px;
-  border-radius: var(--radius-md);
-  font-family: var(--font-main);
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 0 25px var(--primary-glow);
-  animation: pulseButton 2s infinite ease-in-out;
-  transition: transform 0.2s ease;
-  width: 100%;
-  justify-content: center;
-}
-
-.btn-start-camera:hover {
-  transform: scale(1.02);
-}
-
-.btn-start-camera.hidden {
-  display: none;
 }
 
 /* Camera Error Card */
