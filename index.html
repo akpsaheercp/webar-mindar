@@ -9,6 +9,44 @@
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
 
+  <!-- Smart Multi-Camera Resolver for Android & iOS (Runs before MindAR to guarantee Primary Rear RGB Camera) -->
+  <script>
+    (function() {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const origGUM = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+        navigator.mediaDevices.getUserMedia = async function(constraints) {
+          if (constraints && constraints.video) {
+            try {
+              const devices = await navigator.mediaDevices.enumerateDevices();
+              const videoDevices = devices.filter(d => d.kind === 'videoinput');
+              
+              // On multi-camera Android devices, select primary RGB back camera (camera 0)
+              const primaryBack = videoDevices.find(d => 
+                d.label.toLowerCase().includes('camera 0') || 
+                (d.label.toLowerCase().includes('back') && !d.label.toLowerCase().includes('camera 4') && !d.label.toLowerCase().includes('depth'))
+              );
+
+              if (primaryBack) {
+                console.log('✅ Smart Camera Selector: Bound to primary camera ->', primaryBack.label);
+                return await origGUM({
+                  audio: false,
+                  video: {
+                    deviceId: { exact: primaryBack.deviceId },
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                  }
+                });
+              }
+            } catch (err) {
+              console.warn('Smart Camera selector fallback:', err);
+            }
+          }
+          return await origGUM(constraints);
+        };
+      }
+    })();
+  </script>
+
   <!-- A-Frame 1.4.2 & MindAR 1.2.5 & A-Frame Extras 6.1.1 -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
