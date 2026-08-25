@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Interactive WebAR Experience | MindAR</title>
+  <meta name="description" content="Next-Generation WebAR Experience built with MindAR and A-Frame.">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+
+  <!-- A-Frame & MindAR -->
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="loading-card">
+      <div class="loading-spinner-wrapper">
+        <div class="loading-ring"></div>
+        <div class="loading-icon">
+          <i data-lucide="sparkles"></i>
+        </div>
+      </div>
+      <h2>Initializing WebAR</h2>
+      <p id="loading-status">Loading 3D Engine & Computer Vision Models...</p>
+      <div class="progress-bar-container">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+      <div class="loading-tips">
+        <i data-lucide="camera"></i>
+        <span>Please allow camera access when prompted.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- UI Overlay -->
+  <div id="ui-container" class="ui-container">
+    
+    <!-- Top Navigation -->
+    <header class="top-nav">
+      <div class="brand-badge">
+        <span class="pulse-dot"></span>
+        <span class="brand-title">MindAR <span class="brand-sub">Studio</span></span>
+      </div>
+
+      <div class="nav-actions">
+        <button id="btn-audio" class="btn-icon" title="Toggle Sound">
+          <i data-lucide="volume-2"></i>
+        </button>
+        <button id="btn-view-target" class="btn-icon btn-highlight" title="View Target Marker">
+          <i data-lucide="qr-code"></i>
+          <span class="btn-text">View Marker</span>
+        </button>
+        <button id="btn-help" class="btn-icon" title="Instructions">
+          <i data-lucide="help-circle"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Scanning Reticle (Searching for Marker) -->
+    <div id="scanning-guide" class="scanning-guide">
+      <div class="reticle-box">
+        <div class="reticle-corner top-left"></div>
+        <div class="reticle-corner top-right"></div>
+        <div class="reticle-corner bottom-left"></div>
+        <div class="reticle-corner bottom-right"></div>
+        <div class="reticle-laser"></div>
+        <div class="reticle-prompt">
+          <i data-lucide="scan"></i>
+          <span>Point camera at target image</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tracking Status Banner -->
+    <div id="status-banner" class="status-banner lost">
+      <span class="status-indicator"></span>
+      <span id="status-text">Searching for Target Marker...</span>
+    </div>
+
+    <!-- Bottom Controls & Interaction Bar -->
+    <footer class="bottom-bar">
+      <!-- Action Controls (Appears when target is found) -->
+      <div id="ar-controls" class="ar-controls hidden">
+        <div class="control-group">
+          <span class="control-label">3D Robot Animations</span>
+          <div class="chip-group">
+            <button class="chip active" data-anim="Dance">🕺 Dance</button>
+            <button class="chip" data-anim="Wave">👋 Wave</button>
+            <button class="chip" data-anim="Jump">🦘 Jump</button>
+            <button class="chip" data-anim="Idle">🧘 Idle</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <span class="control-label">Interactive Actions</span>
+          <div class="action-btn-row">
+            <button id="btn-action-github" class="action-card-btn">
+              <i data-lucide="github"></i>
+              <span>GitHub</span>
+            </button>
+            <button id="btn-action-share" class="action-card-btn">
+              <i data-lucide="share-2"></i>
+              <span>Share</span>
+            </button>
+            <button id="btn-action-party" class="action-card-btn accent">
+              <i data-lucide="party-popper"></i>
+              <span>Party FX!</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Target Marker Modal (For testing on second screen or phone) -->
+  <div id="target-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i data-lucide="image"></i>
+          <h3>Target Marker Image</h3>
+        </div>
+        <button id="btn-close-modal" class="btn-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-instruction">Point your camera at this target image to activate the 3D augmented reality experience:</p>
+        <div class="marker-preview-box">
+          <img id="target-preview-img" src="assets/card.png" alt="AR Target Marker" class="marker-image">
+        </div>
+        <div class="modal-tips">
+          <p><strong>💡 Testing Options:</strong></p>
+          <ul>
+            <li>Open this page on your phone and scan your laptop screen, <strong>OR</strong></li>
+            <li>Display this target marker on another device / print it out and point your webcam at it.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="assets/card.png" download="ar-target-marker.png" class="btn-primary">
+          <i data-lucide="download"></i> Download Marker Image
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help & Info Modal -->
+  <div id="help-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i data-lucide="info"></i>
+          <h3>How to Use WebAR</h3>
+        </div>
+        <button id="btn-close-help" class="btn-close">&times;</button>
+      </div>
+      <div class="modal-body help-content">
+        <div class="help-step">
+          <div class="step-badge">1</div>
+          <div class="step-text">
+            <strong>Allow Camera</strong>
+            <p>Grant camera permissions when prompted by your browser.</p>
+          </div>
+        </div>
+        <div class="help-step">
+          <div class="step-badge">2</div>
+          <div class="step-text">
+            <strong>Scan the Target Marker</strong>
+            <p>Aim your camera at the target card image in a well-lit environment.</p>
+          </div>
+        </div>
+        <div class="help-step">
+          <div class="step-badge">3</div>
+          <div class="step-text">
+            <strong>Interact in Augmented Reality</strong>
+            <p>Watch the 3D character appear! Tap bottom animation chips and buttons to interact in real-time.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-help-ok" class="btn-primary">Got it!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- A-Frame / MindAR Scene -->
+  <a-scene
+    mindar-image="imageTargetSrc: ./assets/card.mind; filterMinCF: 0.001; filterBeta: 10; warmupTolerance: 5; missTolerance: 5; autoStart: true; uiLoading: no; uiScanning: no; uiError: no;"
+    color-space="sRGB"
+    renderer="colorManagement: true, physicallyCorrectLights: true"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false">
+
+    <a-assets>
+      <!-- 3D Models & Assets -->
+      <a-asset-item id="robotModel" src="./assets/robot.glb"></a-asset-item>
+    </a-assets>
+
+    <!-- Camera -->
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+    <!-- Target Anchor 0 -->
+    <a-entity id="target-anchor" mindar-image-target="targetIndex: 0">
+      
+      <!-- Base Hologram Platform Ring -->
+      <a-ring
+        position="0 0 0.01"
+        radius-inner="0.35"
+        radius-outer="0.48"
+        color="#00f2fe"
+        opacity="0.85"
+        rotation="0 0 0"
+        material="shader: flat; transparent: true">
+      </a-ring>
+
+      <!-- Inner Accent Ring -->
+      <a-ring
+        position="0 0 0.02"
+        radius-inner="0.25"
+        radius-outer="0.3"
+        color="#4facfe"
+        opacity="0.6"
+        material="shader: flat; transparent: true">
+      </a-ring>
+
+      <!-- 3D Animated Character Entity -->
+      <a-entity
+        id="ar-character"
+        gltf-model="#robotModel"
+        position="0 -0.25 0.1"
+        rotation="90 0 0"
+        scale="0.22 0.22 0.22"
+        animation-mixer="clip: Dance; loop: repeat; crossFadeDuration: 0.4">
+      </a-entity>
+
+      <!-- Floating 3D Info Banner -->
+      <a-entity position="0 0.45 0.15" rotation="0 0 0">
+        <!-- Background Plane -->
+        <a-plane
+          width="0.8"
+          height="0.2"
+          color="#0f172a"
+          opacity="0.9"
+          material="shader: flat; transparent: true">
+        </a-plane>
+        <!-- Border Plane -->
+        <a-plane
+          width="0.82"
+          height="0.22"
+          position="0 0 -0.005"
+          color="#00f2fe"
+          opacity="0.8"
+          material="shader: flat; transparent: true">
+        </a-plane>
+        <!-- Text -->
+        <a-text
+          value="WebAR Experience\nMindAR + A-Frame"
+          align="center"
+          color="#ffffff"
+          position="0 0 0.02"
+          scale="0.32 0.32 0.32"
+          font="https://cdn.aframe.io/fonts/DejaVu-sdf.fnt">
+        </a-text>
+      </a-entity>
+
+      <!-- Scene Lighting -->
+      <a-light type="ambient" intensity="1.4" color="#ffffff"></a-light>
+      <a-light type="directional" position="1 2 2" intensity="1.8" color="#00f2fe"></a-light>
+      <a-light type="directional" position="-1 -2 2" intensity="1.2" color="#ff007f"></a-light>
+
+    </a-entity>
+  </a-scene>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- App Script -->
+  <script src="app.js"></script>
+</body>
+</html>
