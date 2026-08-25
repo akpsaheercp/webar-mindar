@@ -73,12 +73,12 @@
       device-orientation-permission-ui="enabled: false">
 
       <!-- Camera -->
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      <a-camera id="ar-camera" position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <!-- Target Anchor 0 (Darusuffa Card) -->
       <a-entity id="target-anchor" mindar-image-target="targetIndex: 0">
         
-        <!-- 3D Hologram Rotator Group (Centered on Target Card) -->
+        <!-- 3D Hologram Rotator Group (Default anchored on Target Card) -->
         <a-entity id="hologram-rotator" position="0 0 0" rotation="90 0 0" scale="0.5 0.5 0.5">
 
           <!-- ================= 1. HOLOGRAPHIC GEOMETRIC BASE ================= -->
@@ -249,7 +249,7 @@
 
       <div class="loading-tips" id="loading-tip-text">
         <i data-lucide="sparkles"></i>
-        <span>Point camera at Darusuffa card to reveal the Meeladunnabi hologram.</span>
+        <span>Point camera at Darusuffa card or tap "Fit" to view anywhere.</span>
       </div>
     </div>
   </div>
@@ -265,15 +265,20 @@
       </div>
 
       <div class="nav-actions">
+        <!-- Prominent FIT to Screen Button -->
+        <button id="btn-fit-mode" class="btn-icon btn-highlight" title="Fit Hologram to Screen View regardless of card position">
+          <i data-lucide="maximize"></i>
+          <span id="btn-fit-text" class="btn-text">Fit</span>
+        </button>
         <button id="btn-lighting" class="btn-icon" title="Toggle Night & Lantern Lights">
           <i data-lucide="moon"></i>
         </button>
         <button id="btn-audio" class="btn-icon" title="Toggle Sound">
           <i data-lucide="volume-2"></i>
         </button>
-        <button id="btn-view-target" class="btn-icon btn-highlight" title="View Target Card">
+        <button id="btn-view-target" class="btn-icon" title="View Target Card">
           <i data-lucide="qr-code"></i>
-          <span class="btn-text">View Card</span>
+          <span class="btn-text">Card</span>
         </button>
         <button id="btn-help" class="btn-icon" title="Instructions">
           <i data-lucide="help-circle"></i>
@@ -281,10 +286,10 @@
       </div>
     </header>
 
-    <!-- Gesture 360° Hint Banner -->
+    <!-- Gesture 360° & Fit Mode Hint Banner -->
     <div id="gesture-hint" class="gesture-hint hidden">
       <i data-lucide="rotate-3d"></i>
-      <span>👆 Drag to rotate 360° • 🤏 Pinch to scale hologram</span>
+      <span id="gesture-hint-text">👆 Drag to rotate 360° • 🤏 Pinch to scale • Tap "Fit" to center on screen</span>
     </div>
 
     <!-- Scanning Reticle (Searching for Marker) -->
@@ -297,7 +302,7 @@
         <div class="reticle-laser"></div>
         <div class="reticle-prompt">
           <i data-lucide="scan"></i>
-          <span>Aim camera at Darusuffa card</span>
+          <span>Aim camera at card or tap Fit</span>
         </div>
       </div>
     </div>
@@ -355,9 +360,9 @@
 
         <!-- Quick Actions -->
         <div class="action-btn-row">
-          <button id="btn-action-github" class="action-card-btn">
-            <i data-lucide="github"></i>
-            <span>GitHub</span>
+          <button id="btn-fit-toggle" class="action-card-btn highlight-fit">
+            <i data-lucide="maximize"></i>
+            <span id="btn-fit-bottom-text">Fit to Screen</span>
           </button>
           <button id="btn-action-share" class="action-card-btn">
             <i data-lucide="share-2"></i>
@@ -389,10 +394,10 @@
           <img id="target-preview-img" src="assets/card.png" alt="Darusuffa Target Card" class="marker-image">
         </div>
         <div class="modal-tips">
-          <p><strong>💡 How to test:</strong></p>
+          <p><strong>💡 Features:</strong></p>
           <ul>
-            <li>Scan your physical Darusuffa printed card with your camera.</li>
-            <li>The 3D Meeladunnabi Rabee-ul-Awwal celebration hologram will materialize automatically!</li>
+            <li>Scan your card to anchor the 3D hologram directly over it.</li>
+            <li>Tap the <strong>"Fit"</strong> button anytime to pin the hologram centered on your screen regardless of card movement!</li>
           </ul>
         </div>
       </div>
@@ -410,7 +415,7 @@
       <div class="modal-header">
         <div class="modal-title-group">
           <i data-lucide="info"></i>
-          <h3>How to Experience WebAR</h3>
+          <h3>How to Use WebAR & "Fit" Mode</h3>
         </div>
         <button id="btn-close-help" class="btn-close">&times;</button>
       </div>
@@ -418,22 +423,22 @@
         <div class="help-step">
           <div class="step-badge">1</div>
           <div class="step-text">
-            <strong>Scan the Darusuffa Card</strong>
-            <p>Aim your camera at the card in normal landscape orientation.</p>
+            <strong>Scan the Card</strong>
+            <p>Aim your camera at the Darusuffa card in normal landscape orientation.</p>
           </div>
         </div>
         <div class="help-step">
           <div class="step-badge">2</div>
           <div class="step-text">
-            <strong>Experience Meeladunnabi Celebration</strong>
-            <p>Watch the 3D glowing Crescent, Star, Green Dome, Lanterns, and Meeladunnabi Mubarak message appear in AR!</p>
+            <strong>Tap the "Fit" Button</strong>
+            <p>Tap <strong>"Fit"</strong> to center the 3D hologram directly on your screen so you can view it clearly anywhere, even if the card moves away!</p>
           </div>
         </div>
         <div class="help-step">
           <div class="step-badge">3</div>
           <div class="step-text">
-            <strong>360° Touch Rotation & Celebrate</strong>
-            <p>Drag on screen to rotate the hologram from any angle, tap Celebrate for golden confetti & chimes!</p>
+            <strong>Rotate & Celebrate</strong>
+            <p>Drag on screen to rotate in full 360°, pinch to zoom, and tap Celebrate for golden confetti & spiritual chimes!</p>
           </div>
         </div>
       </div>

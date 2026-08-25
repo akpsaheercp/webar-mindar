@@ -1,6 +1,6 @@
 /**
  * Meeladunnabi Mubarak & Rabee-ul-Awwal WebAR Experience
- * 3D Hologram, Glowing Crescent & Dome, Lanterns, 360° Touch Controls
+ * 3D Hologram, "Fit to Screen" Mode & 360° Touch Controls
  */
 
 function initIcons() {
@@ -25,12 +25,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const scanningGuide = document.getElementById('scanning-guide');
   const gestureHint = document.getElementById('gesture-hint');
+  const gestureHintText = document.getElementById('gesture-hint-text');
   const statusBanner = document.getElementById('status-banner');
   const statusText = document.getElementById('status-text');
   const arControls = document.getElementById('ar-controls');
   const targetAnchor = document.getElementById('target-anchor');
+  const arCamera = document.getElementById('ar-camera');
   const hologramRotator = document.getElementById('hologram-rotator');
   const sceneEl = document.querySelector('a-scene');
+
+  // Fit Mode Buttons
+  const btnFitMode = document.getElementById('btn-fit-mode');
+  const btnFitText = document.getElementById('btn-fit-text');
+  const btnFitToggle = document.getElementById('btn-fit-toggle');
+  const btnFitBottomText = document.getElementById('btn-fit-bottom-text');
 
   // Hologram 3D Groups
   const baseGroup = document.getElementById('hologram-base');
@@ -98,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function playHologramChime() {
     if (!audioEnabled) return;
-    // Harmonic spiritual arpeggio: C5 - E5 - G5 - B5 - C6
     const notes = [523.25, 659.25, 783.99, 987.77, 1046.5];
     notes.forEach((f, idx) => {
       setTimeout(() => playTone(f, 'sine', 0.4, 0.15), idx * 120);
@@ -153,6 +160,101 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // --- 360° 3-Axis Hologram Rotation & Transform State ---
+  let rotX = 90;
+  let rotY = 0;
+  let rotZ = 0;
+  let currentScale = 0.5;
+  let isAutoRotating = true;
+  let autoRotateSpeed = 0.45;
+  let frameCount = 0;
+
+  function updateHologramTransform() {
+    if (hologramRotator) {
+      hologramRotator.setAttribute('rotation', `${rotX} ${rotY} ${rotZ}`);
+      hologramRotator.setAttribute('scale', `${currentScale} ${currentScale} ${currentScale}`);
+    }
+  }
+
+  // --- FIT TO SCREEN MODE CONTROLLER ---
+  let isFitMode = false;
+
+  function toggleFitMode() {
+    playClick();
+    if (!hologramRotator || !targetAnchor || !arCamera) return;
+
+    isFitMode = !isFitMode;
+
+    if (isFitMode) {
+      // 1. Move hologram from targetAnchor to arCamera (Screen Space HUD View)
+      arCamera.appendChild(hologramRotator);
+      hologramRotator.setAttribute('position', '0 -0.05 -1.75');
+      
+      rotX = 0; // Front facing in screen space
+      rotY = 0;
+      rotZ = 0;
+      currentScale = 0.55;
+      updateHologramTransform();
+
+      // 2. Update UI
+      if (btnFitMode) btnFitMode.classList.add('active-fit');
+      if (btnFitText) btnFitText.textContent = 'Anchor';
+      if (btnFitToggle) {
+        btnFitToggle.classList.add('active-fit');
+        btnFitToggle.innerHTML = '<i data-lucide="minimize-2"></i> <span>Anchor Card</span>';
+      }
+      if (btnFitBottomText) btnFitBottomText.textContent = 'Anchor Card';
+
+      if (scanningGuide) scanningGuide.classList.add('hidden');
+      if (gestureHint) gestureHint.classList.remove('hidden');
+      if (gestureHintText) gestureHintText.textContent = '📱 Fit Mode Active — Centered on screen • Drag to rotate 360°';
+      if (arControls) arControls.classList.remove('hidden');
+      
+      if (statusBanner) {
+        statusBanner.classList.remove('lost');
+        statusBanner.classList.add('found');
+      }
+      if (statusText) statusText.textContent = 'Fit to Screen View Active 📱✨';
+
+      playHologramChime();
+      initIcons();
+    } else {
+      // 1. Return hologram back to targetAnchor (Card Anchor View)
+      targetAnchor.appendChild(hologramRotator);
+      hologramRotator.setAttribute('position', '0 0 0');
+      
+      rotX = 90; // Standard card perpendicular
+      rotY = 0;
+      rotZ = 0;
+      currentScale = 0.5;
+      updateHologramTransform();
+
+      // 2. Update UI
+      if (btnFitMode) btnFitMode.classList.remove('active-fit');
+      if (btnFitText) btnFitText.textContent = 'Fit';
+      if (btnFitToggle) {
+        btnFitToggle.classList.remove('active-fit');
+        btnFitToggle.innerHTML = '<i data-lucide="maximize"></i> <span>Fit to Screen</span>';
+      }
+      if (btnFitBottomText) btnFitBottomText.textContent = 'Fit to Screen';
+
+      if (gestureHintText) gestureHintText.textContent = '👆 Drag to rotate 360° • 🤏 Pinch to scale • Tap "Fit" to center on screen';
+      
+      // Update tracking banner
+      if (statusBanner) {
+        statusBanner.classList.remove('found');
+        statusBanner.classList.add('lost');
+      }
+      if (statusText) statusText.textContent = 'Searching for Darusuffa Card...';
+      if (scanningGuide) scanningGuide.classList.remove('hidden');
+
+      initIcons();
+    }
+  }
+
+  if (btnFitMode) btnFitMode.addEventListener('click', toggleFitMode);
+  if (btnFitToggle) btnFitToggle.addEventListener('click', toggleFitMode);
+
   // --- Dynamic Hologram Materialization Animation ---
   let animInProgress = false;
 
@@ -163,13 +265,13 @@ document.addEventListener('DOMContentLoaded', () => {
     playHologramChime();
     triggerConfetti();
 
-    // Scale up from 0 to 0.5 smoothly
     hologramRotator.setAttribute('scale', '0.01 0.01 0.01');
     let s = 0.01;
+    const maxS = isFitMode ? 0.55 : 0.5;
     const growInt = setInterval(() => {
       s += 0.04;
-      if (s >= 0.5) {
-        s = 0.5;
+      if (s >= maxS) {
+        s = maxS;
         clearInterval(growInt);
         animInProgress = false;
       }
@@ -220,22 +322,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // --- 360° 3-Axis Hologram Rotation & Oscillation ---
-  let rotX = 90;
-  let rotY = 0;
-  let rotZ = 0;
-  let currentScale = 0.5;
-  let isAutoRotating = true;
-  let autoRotateSpeed = 0.45;
-  let frameCount = 0;
-
-  function updateHologramTransform() {
-    if (hologramRotator) {
-      hologramRotator.setAttribute('rotation', `${rotX} ${rotY} ${rotZ}`);
-      hologramRotator.setAttribute('scale', `${currentScale} ${currentScale} ${currentScale}`);
-    }
-  }
-
   // Animation Loop (Turntable Rotation & Lantern Swaying)
   function renderLoop() {
     frameCount++;
@@ -244,12 +330,10 @@ document.addEventListener('DOMContentLoaded', () => {
       updateHologramTransform();
     }
 
-    // Gentle lantern sway oscillation
     const sway = Math.sin(frameCount * 0.04) * 8;
     if (lanternLeft) lanternLeft.setAttribute('rotation', `0 0 ${sway}`);
     if (lanternRight) lanternRight.setAttribute('rotation', `0 0 ${-sway}`);
 
-    // Sparkle ring pulse
     if (sparkleRing) {
       const ringScale = 1 + Math.sin(frameCount * 0.05) * 0.06;
       sparkleRing.setAttribute('scale', `${ringScale} ${ringScale} 1`);
@@ -274,10 +358,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnResetRotation) {
     btnResetRotation.addEventListener('click', () => {
       playClick();
-      rotX = 90;
+      rotX = isFitMode ? 0 : 90;
       rotY = 0;
       rotZ = 0;
-      currentScale = 0.5;
+      currentScale = isFitMode ? 0.55 : 0.5;
       isAutoRotating = false;
       if (btnAutoRotate) {
         btnAutoRotate.classList.remove('active');
@@ -486,6 +570,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (targetAnchor) {
     targetAnchor.addEventListener('targetFound', () => {
+      if (isFitMode) return; // In Fit mode, keep screen-space HUD view
+
       console.log('🌙 Meeladunnabi Target Found!');
 
       if (isFirstFound) {
@@ -504,6 +590,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     targetAnchor.addEventListener('targetLost', () => {
+      if (isFitMode) return; // In Fit mode, do not hide the hologram!
+
       console.log('Target Lost');
       if (scanningGuide) scanningGuide.classList.remove('hidden');
       if (gestureHint) gestureHint.classList.add('hidden');
@@ -673,7 +761,6 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.fillStyle = p.color;
 
       if (p.isStar) {
-        // Draw 4-point golden sparkle
         ctx.beginPath();
         ctx.moveTo(0, -p.size);
         ctx.lineTo(p.size * 0.3, -p.size * 0.3);

@@ -966,3 +966,26 @@ header, footer, button, .modal-card, .status-banner {
     gap: 8px;
   }
 }
+
+/* --- Fit to Screen Mode Specific Styling --- */
+.action-card-btn.highlight-fit {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(245, 158, 11, 0.35));
+  border-color: var(--nature-sun);
+  color: #fef08a;
+  font-weight: 700;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.3);
+}
+
+.action-card-btn.highlight-fit:hover {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.45), rgba(245, 158, 11, 0.5));
+  box-shadow: 0 0 22px rgba(245, 158, 11, 0.5);
+  transform: translateY(-2px);
+}
+
+.btn-icon.active-fit {
+  background: linear-gradient(135deg, var(--nature-emerald), var(--nature-sun)) !important;
+  color: #022c22 !important;
+  font-weight: 800 !important;
+  border-color: transparent !important;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.6) !important;
+}
