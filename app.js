@@ -1,5 +1,5 @@
 /**
- * MindAR Interactive WebAR Application
+ * MindAR Interactive WebAR Application with Robust Mobile Camera Handling
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,12 +12,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const loadingOverlay = document.getElementById('loading-overlay');
   const loadingStatus = document.getElementById('loading-status');
   const progressBar = document.getElementById('progress-bar');
+  const progressContainer = document.getElementById('progress-container');
+  const btnStartCamera = document.getElementById('btn-start-camera');
+  const cameraErrorBox = document.getElementById('camera-error-box');
+  const cameraErrorText = document.getElementById('camera-error-text');
+  const btnRetryCamera = document.getElementById('btn-retry-camera');
+  const loadingTipText = document.getElementById('loading-tip-text');
+  const loadingRing = document.getElementById('loading-ring');
+
   const scanningGuide = document.getElementById('scanning-guide');
   const statusBanner = document.getElementById('status-banner');
   const statusText = document.getElementById('status-text');
   const arControls = document.getElementById('ar-controls');
   const targetAnchor = document.getElementById('target-anchor');
   const arCharacter = document.getElementById('ar-character');
+  const sceneEl = document.querySelector('a-scene');
 
   // Modals & Buttons
   const targetModal = document.getElementById('target-modal');
@@ -34,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const animationChips = document.querySelectorAll('.chip');
 
-  // Audio Context (Synthesizer for reliable zero-latency sound without external audio files)
+  // Audio Context (Synthesizer)
   let audioEnabled = true;
   let audioCtx = null;
 
@@ -142,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Interactive Quick Action Buttons
+  // Quick Action Buttons
   btnParty.addEventListener('click', () => {
     playPartyFanfare();
     triggerConfetti();
@@ -163,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
           url: window.location.href,
         });
       } catch (err) {
-        console.log('Share canceled or failed');
+        console.log('Share canceled');
       }
     } else {
       navigator.clipboard.writeText(window.location.href);
@@ -184,7 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
         isFirstFound = false;
       }
 
-      // Update UI
       scanningGuide.classList.add('hidden');
       arControls.classList.remove('hidden');
       statusBanner.classList.remove('lost');
@@ -194,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     targetAnchor.addEventListener('targetLost', () => {
       console.log('MindAR Target Lost!');
-      // Update UI
       scanningGuide.classList.remove('hidden');
       arControls.classList.add('hidden');
       statusBanner.classList.remove('found');
@@ -203,34 +210,89 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Scene Loading Management
-  const sceneEl = document.querySelector('a-scene');
-
-  function updateLoadingProgress(percent, msg) {
+  // Camera & Scene Initialization
+  function updateProgress(percent, msg) {
     if (progressBar) progressBar.style.width = `${percent}%`;
     if (loadingStatus) loadingStatus.textContent = msg;
   }
 
-  updateLoadingProgress(40, 'Compiling 3D scene & camera feed...');
+  function handleCameraReady() {
+    console.log('MindAR Camera is Ready!');
+    updateProgress(100, 'Camera & AR Ready!');
+    setTimeout(() => {
+      loadingOverlay.classList.add('hidden');
+    }, 400);
+  }
 
+  function showCameraError(msg) {
+    console.error('Camera Error:', msg);
+    if (loadingRing) loadingRing.classList.add('paused');
+    if (progressContainer) progressContainer.classList.add('hidden');
+    if (btnStartCamera) btnStartCamera.classList.add('hidden');
+    if (cameraErrorBox) cameraErrorBox.classList.remove('hidden');
+    if (cameraErrorText) cameraErrorText.textContent = msg || 'Could not access camera.';
+    if (loadingStatus) loadingStatus.textContent = 'Camera Access Required';
+  }
+
+  function promptStartButton() {
+    updateProgress(100, 'Ready! Tap to start camera');
+    if (progressContainer) progressContainer.classList.add('hidden');
+    if (btnStartCamera) {
+      btnStartCamera.classList.remove('hidden');
+      if (window.lucide) window.lucide.createIcons();
+    }
+  }
+
+  // Check WebRTC / HTTPS support
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    showCameraError('Your browser or connection does not support camera access. Please use Chrome on Android over HTTPS.');
+    return;
+  }
+
+  // MindAR Event Listeners
   if (sceneEl) {
-    sceneEl.addEventListener('loaded', () => {
-      updateLoadingProgress(80, 'Camera ready! Starting AR engine...');
-      setTimeout(() => {
-        updateLoadingProgress(100, 'Ready!');
-        setTimeout(() => {
-          loadingOverlay.classList.add('hidden');
-        }, 500);
-      }, 600);
+    sceneEl.addEventListener('arReady', () => {
+      handleCameraReady();
     });
 
-    // Fallback if loaded event fired before script execution
-    if (sceneEl.hasLoaded) {
-      updateLoadingProgress(100, 'Ready!');
-      setTimeout(() => {
-        loadingOverlay.classList.add('hidden');
-      }, 500);
-    }
+    sceneEl.addEventListener('arError', (event) => {
+      showCameraError('Camera access was blocked or is in use by another app.');
+    });
+
+    // Fallback: If arReady doesn't fire after 3.5s, prompt user with Start button
+    const fallbackTimer = setTimeout(() => {
+      if (!loadingOverlay.classList.contains('hidden') && cameraErrorBox.classList.contains('hidden')) {
+        promptStartButton();
+      }
+    }, 3500);
+
+    btnStartCamera.addEventListener('click', async () => {
+      initAudio();
+      playClick();
+      btnStartCamera.classList.add('hidden');
+      updateProgress(90, 'Starting camera stream...');
+      if (progressContainer) progressContainer.classList.remove('hidden');
+
+      try {
+        const arSystem = sceneEl.systems['mindar-image-system'];
+        if (arSystem) {
+          await arSystem.start();
+          handleCameraReady();
+        } else {
+          // Direct fallback request
+          await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+          handleCameraReady();
+        }
+      } catch (err) {
+        showCameraError(err.name === 'NotAllowedError' 
+          ? 'Camera permission was denied. Please allow camera access in browser settings.' 
+          : err.message);
+      }
+    });
+
+    btnRetryCamera.addEventListener('click', () => {
+      window.location.reload();
+    });
   }
 
   // Lightweight Confetti Particle System

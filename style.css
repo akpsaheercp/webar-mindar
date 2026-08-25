@@ -7,8 +7,8 @@
   --accent-glow: rgba(255, 0, 127, 0.4);
   --success: #10b981;
   --success-glow: rgba(16, 185, 129, 0.4);
-  --bg-glass: rgba(15, 23, 42, 0.75);
-  --bg-glass-hover: rgba(30, 41, 59, 0.85);
+  --bg-glass: rgba(15, 23, 42, 0.8);
+  --bg-glass-hover: rgba(30, 41, 59, 0.9);
   --border-glass: rgba(255, 255, 255, 0.15);
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
@@ -34,11 +34,11 @@ html, body {
   overflow: hidden;
   position: fixed;
   font-family: var(--font-main);
-  background-color: #000;
+  background-color: transparent !important;
   color: var(--text-main);
 }
 
-/* Ensure A-Frame takes full screen behind UI */
+/* Ensure A-Frame and MindAR Video Take Full Screen */
 a-scene {
   position: absolute;
   top: 0;
@@ -46,6 +46,26 @@ a-scene {
   width: 100vw;
   height: 100vh;
   z-index: 1;
+}
+
+.a-canvas {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1 !important;
+}
+
+/* MindAR Video Feed */
+video {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  z-index: 0 !important;
 }
 
 /* --- UI Container Layer --- */
@@ -63,7 +83,6 @@ a-scene {
   padding: env(safe-area-inset-top, 16px) env(safe-area-inset-right, 16px) env(safe-area-inset-bottom, 16px) env(safe-area-inset-left, 16px);
 }
 
-/* Allow interaction on UI elements */
 header, footer, button, .modal-card, .status-banner {
   pointer-events: auto;
 }
@@ -148,11 +167,6 @@ header, footer, button, .modal-card, .status-banner {
   border-color: var(--primary);
   color: var(--primary);
   box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
-}
-
-.btn-icon.btn-highlight:hover {
-  background: linear-gradient(135deg, rgba(0, 242, 254, 0.35), rgba(79, 172, 254, 0.45));
-  box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
 }
 
 /* --- Scanning HUD Guide --- */
@@ -593,7 +607,7 @@ header, footer, button, .modal-card, .status-banner {
   line-height: 1.4;
 }
 
-/* --- Loading Overlay --- */
+/* --- Loading Overlay & Camera Prompt --- */
 .loading-overlay {
   position: fixed;
   inset: 0;
@@ -603,33 +617,34 @@ header, footer, button, .modal-card, .status-banner {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  transition: opacity 0.6s ease, visibility 0.6s ease;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
 .loading-overlay.hidden {
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
 }
 
 .loading-card {
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(15, 23, 42, 0.95);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-lg);
-  padding: 36px 28px;
+  padding: 30px 24px;
   text-align: center;
-  max-width: 360px;
+  max-width: 380px;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  gap: 14px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
 }
 
 .loading-spinner-wrapper {
   position: relative;
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -642,6 +657,10 @@ header, footer, button, .modal-card, .status-banner {
   border-top-color: var(--primary);
   border-radius: 50%;
   animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.loading-ring.paused {
+  animation-play-state: paused;
 }
 
 .loading-icon {
@@ -667,12 +686,107 @@ header, footer, button, .modal-card, .status-banner {
   overflow: hidden;
 }
 
+.progress-bar-container.hidden {
+  display: none;
+}
+
 .progress-bar {
-  width: 15%;
+  width: 20%;
   height: 100%;
   background: linear-gradient(90deg, var(--primary), var(--secondary));
   border-radius: var(--radius-full);
   transition: width 0.4s ease;
+}
+
+.btn-start-camera {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #020617;
+  border: none;
+  padding: 14px 28px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-main);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 0 25px var(--primary-glow);
+  animation: pulseButton 2s infinite ease-in-out;
+  transition: transform 0.2s ease;
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-start-camera:hover {
+  transform: scale(1.02);
+}
+
+.btn-start-camera.hidden {
+  display: none;
+}
+
+/* Camera Error Card */
+.camera-error-box {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+  width: 100%;
+}
+
+.camera-error-box.hidden {
+  display: none;
+}
+
+.error-icon {
+  color: #f87171;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.error-msg {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fca5a5;
+}
+
+.error-guide {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.error-guide ol {
+  padding-left: 18px;
+  margin-top: 4px;
+}
+
+.error-guide li {
+  margin-bottom: 2px;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-glass);
+  color: var(--text-main);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .loading-tips {
@@ -681,7 +795,7 @@ header, footer, button, .modal-card, .status-banner {
   gap: 8px;
   font-size: 0.78rem;
   color: var(--text-muted);
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
 /* --- Confetti Canvas --- */
@@ -706,6 +820,11 @@ header, footer, button, .modal-card, .status-banner {
 @keyframes pulseDot {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.3); opacity: 0.6; }
+}
+
+@keyframes pulseButton {
+  0%, 100% { box-shadow: 0 0 20px var(--primary-glow); }
+  50% { box-shadow: 0 0 35px rgba(0, 242, 254, 0.7); }
 }
 
 @keyframes slideDown {
