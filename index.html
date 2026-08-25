@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>3D Architectural WebAR | Flat Building from Foundation</title>
-  <meta name="description" content="Augmented Reality experience showing a modern apartment building constructing from its QR code foundation.">
+  <title>Darusuffa WebAR | 3D Flat Building from QR Base</title>
+  <meta name="description" content="Augmented Reality experience showing a modern apartment flat constructing from its QR foundation.">
 
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏗️</text></svg>">
@@ -75,11 +75,11 @@
       <!-- Camera -->
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- Target Anchor 0 (QR Code Foundation Base) -->
+      <!-- Target Anchor 0 (Darusuffa Card QR Base) -->
       <a-entity id="target-anchor" mindar-image-target="targetIndex: 0">
         
-        <!-- 3D Hologram Rotator Group (Enables full 360° 3-Axis Drag Rotation) -->
-        <a-entity id="hologram-rotator" position="0 0 0" rotation="90 0 0" scale="1 1 1">
+        <!-- 3D Hologram Rotator Group (Centered on QR Code Base) -->
+        <a-entity id="hologram-rotator" position="0 0.15 0" rotation="90 0 0" scale="0.75 0.75 0.75">
 
           <!-- ================= 1. FOUNDATION LEVEL (Directly on QR Code) ================= -->
           <a-entity id="building-foundation">
@@ -130,7 +130,7 @@
           <a-entity id="floor-2" position="0 0.43 0" class="building-tier">
             <!-- Apartment Core Structure -->
             <a-box position="0 0.1 0" width="0.62" height="0.18" depth="0.62" color="#0f172a"></a-box>
-            <!-- Modern Accent Architectural Fins (White/Wood) -->
+            <!-- Modern Accent Architectural Fins -->
             <a-box position="-0.32 0.1 0.1" width="0.02" height="0.18" depth="0.1" color="#f8fafc"></a-box>
             <a-box position="0.32 0.1 -0.1" width="0.02" height="0.18" depth="0.1" color="#f8fafc"></a-box>
             <!-- Glass Windows with Warm Interior Glow -->
@@ -181,12 +181,12 @@
         </a-entity>
 
         <!-- Floating Architectural Info Banner -->
-        <a-entity position="0 0.7 0.15" rotation="0 0 0">
+        <a-entity position="0 0.95 0.15" rotation="0 0 0">
           <a-plane width="0.85" height="0.22" color="#0f172a" opacity="0.92" material="shader: flat; transparent: true"></a-plane>
           <a-plane width="0.87" height="0.24" position="0 0 -0.005" color="#00f2fe" opacity="0.85" material="shader: flat; transparent: true"></a-plane>
           <a-text
             id="ar-info-text"
-            value="MODERN RESIDENCY\nAR Architectural Foundation"
+            value="DARUSUFFA ACADEMY\n3D AR Flat Foundation"
             align="center"
             color="#ffffff"
             position="0 0 0.02"
@@ -214,7 +214,7 @@
           <i data-lucide="building-2"></i>
         </div>
       </div>
-      <h2>Architectural WebAR</h2>
+      <h2>Darusuffa WebAR</h2>
       <p id="loading-status">Starting camera & building engine...</p>
       
       <div id="progress-container" class="progress-bar-container">
@@ -245,7 +245,7 @@
 
       <div class="loading-tips" id="loading-tip-text">
         <i data-lucide="shield-check"></i>
-        <span>Point camera at QR code base to construct apartment building.</span>
+        <span>Point camera at Darusuffa card to construct 3D apartment flat.</span>
       </div>
     </div>
   </div>
@@ -257,7 +257,7 @@
     <header class="top-nav">
       <div class="brand-badge">
         <span class="pulse-dot"></span>
-        <span class="brand-title">Apartment <span class="brand-sub">AR Builder</span></span>
+        <span class="brand-title">Darusuffa <span class="brand-sub">AR Builder</span></span>
       </div>
 
       <div class="nav-actions">
@@ -267,9 +267,9 @@
         <button id="btn-audio" class="btn-icon" title="Toggle Sound">
           <i data-lucide="volume-2"></i>
         </button>
-        <button id="btn-view-target" class="btn-icon btn-highlight" title="View Target QR Marker">
+        <button id="btn-view-target" class="btn-icon btn-highlight" title="View Target Card">
           <i data-lucide="qr-code"></i>
-          <span class="btn-text">View QR Base</span>
+          <span class="btn-text">View Card</span>
         </button>
         <button id="btn-help" class="btn-icon" title="Instructions">
           <i data-lucide="help-circle"></i>
@@ -293,7 +293,7 @@
         <div class="reticle-laser"></div>
         <div class="reticle-prompt">
           <i data-lucide="scan"></i>
-          <span>Aim camera at QR foundation base</span>
+          <span>Aim camera at Darusuffa card QR base</span>
         </div>
       </div>
     </div>
@@ -301,7 +301,7 @@
     <!-- Tracking Status Banner -->
     <div id="status-banner" class="status-banner lost">
       <span class="status-indicator"></span>
-      <span id="status-text">Searching for QR Foundation Base...</span>
+      <span id="status-text">Searching for Darusuffa Card...</span>
     </div>
 
     <!-- Bottom Controls & Interaction Bar -->
@@ -372,32 +372,32 @@
 
   </div>
 
-  <!-- Target QR Marker Modal -->
+  <!-- Target Card Modal -->
   <div id="target-modal" class="modal-overlay hidden">
     <div class="modal-card">
       <div class="modal-header">
         <div class="modal-title-group">
           <i data-lucide="qr-code"></i>
-          <h3>QR Code Foundation Marker</h3>
+          <h3>Darusuffa Target Card</h3>
         </div>
         <button id="btn-close-modal" class="btn-close">&times;</button>
       </div>
       <div class="modal-body">
-        <p class="modal-instruction">Point your camera at this QR code base to build the 3D apartment from the ground up:</p>
+        <p class="modal-instruction">Point your camera at this physical Darusuffa card to build the 3D apartment flat:</p>
         <div class="marker-preview-box">
-          <img id="target-preview-img" src="assets/card.png" alt="QR Foundation Base Marker" class="marker-image">
+          <img id="target-preview-img" src="assets/card.png" alt="Darusuffa Target Card" class="marker-image">
         </div>
         <div class="modal-tips">
           <p><strong>💡 How to test:</strong></p>
           <ul>
-            <li>Open this marker image on a laptop/tablet/paper and point your phone at the QR code base.</li>
-            <li>Watch the pillars, floors, and penthouse materialize step-by-step!</li>
+            <li>Scan your physical Darusuffa printed card with your camera.</li>
+            <li>The 3D apartment flat will build automatically right on top of the QR code foundation!</li>
           </ul>
         </div>
       </div>
       <div class="modal-footer">
-        <a href="assets/card.png" download="apartment-qr-foundation-marker.png" class="btn-primary">
-          <i data-lucide="download"></i> Download QR Marker
+        <a href="assets/card.png" download="darusuffa-target-card.png" class="btn-primary">
+          <i data-lucide="download"></i> Download Card Image
         </a>
       </div>
     </div>
@@ -417,14 +417,14 @@
         <div class="help-step">
           <div class="step-badge">1</div>
           <div class="step-text">
-            <strong>Scan the QR Code Base</strong>
-            <p>Aim your camera at the QR code blueprint marker to establish the ground foundation.</p>
+            <strong>Scan the Darusuffa Card</strong>
+            <p>Aim your camera at the Darusuffa card QR base.</p>
           </div>
         </div>
         <div class="help-step">
           <div class="step-badge">2</div>
           <div class="step-text">
-            <strong>Watch the Building Construct</strong>
+            <strong>Watch the Flat Construct</strong>
             <p>The foundation slab, columns, residential floors, penthouse, and rooftop pool build up sequentially in 3D!</p>
           </div>
         </div>
