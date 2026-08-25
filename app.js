@@ -677,7 +677,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function triggerConfetti() {
     if (!ctx) return;
     resizeCanvas();
-    const colors = ['#00f2fe', '#4facfe', '#ff007f', '#ffffff', '#fbbf24', '#10b981'];
+    const colors = ['#10b981', '#22c55e', '#06b6d4', '#f59e0b', '#f43f5e', '#fb7185', '#fef08a', '#38bdf8'];
     
     for (let i = 0; i < 70; i++) {
       particles.push({

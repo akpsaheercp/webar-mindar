@@ -7,7 +7,7 @@
   <meta name="description" content="Augmented Reality experience showing a modern apartment flat constructing from its QR foundation.">
 
   <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏗️</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
 
   <!-- Smart Multi-Camera Resolver for Android & iOS -->
   <script>
@@ -81,109 +81,117 @@
         <!-- 3D Hologram Rotator Group (Centered on QR Code Base) -->
         <a-entity id="hologram-rotator" position="0 0 0" rotation="90 0 0" scale="0.45 0.45 0.45">
 
-          <!-- ================= 1. FOUNDATION LEVEL (Directly on QR Code) ================= -->
+          <!-- ================= 1. FOUNDATION LEVEL (Natural Sandstone & Teak Footings) ================= -->
           <a-entity id="building-foundation">
-            <!-- Concrete Ground Footprint Slab -->
-            <a-box position="0 -0.02 0" width="0.75" height="0.04" depth="0.75" color="#1e293b" material="roughness: 0.8; metalness: 0.2"></a-box>
-            <!-- Foundation Steel Beams Grid -->
-            <a-box position="0 0.005 0" width="0.72" height="0.01" depth="0.72" color="#00f2fe" opacity="0.4" material="wireframe: true"></a-box>
-            <!-- 4 Heavy Concrete Foundation Corner Footings -->
-            <a-box position="-0.3 0.04 -0.3" width="0.1" height="0.08" depth="0.1" color="#334155"></a-box>
-            <a-box position="0.3 0.04 -0.3" width="0.1" height="0.08" depth="0.1" color="#334155"></a-box>
-            <a-box position="-0.3 0.04 0.3" width="0.1" height="0.08" depth="0.1" color="#334155"></a-box>
-            <a-box position="0.3 0.04 0.3" width="0.1" height="0.08" depth="0.1" color="#334155"></a-box>
-            <!-- Glowing Hologram Foundation Grid Ring -->
-            <a-ring position="0 0.001 0" rotation="-90 0 0" radius-inner="0.45" radius-outer="0.55" color="#00f2fe" opacity="0.8" material="shader: flat; transparent: true"></a-ring>
+            <!-- Ground Concrete Foundation Slab -->
+            <a-box position="0 -0.02 0" width="0.76" height="0.04" depth="0.76" color="#1e293b" material="roughness: 0.8"></a-box>
+            <!-- Earthy Green Reinforcement Grid -->
+            <a-box position="0 0.005 0" width="0.73" height="0.01" depth="0.73" color="#10b981" opacity="0.6" material="wireframe: true"></a-box>
+            <!-- 4 Heavy Sandstone Foundation Footings -->
+            <a-box position="-0.3 0.04 -0.3" width="0.1" height="0.08" depth="0.1" color="#78350f"></a-box>
+            <a-box position="0.3 0.04 -0.3" width="0.1" height="0.08" depth="0.1" color="#78350f"></a-box>
+            <a-box position="-0.3 0.04 0.3" width="0.1" height="0.08" depth="0.1" color="#78350f"></a-box>
+            <a-box position="0.3 0.04 0.3" width="0.1" height="0.08" depth="0.1" color="#78350f"></a-box>
+            <!-- Glowing Botanical Emerald Foundation Ring -->
+            <a-ring position="0 0.001 0" rotation="-90 0 0" radius-inner="0.45" radius-outer="0.55" color="#10b981" opacity="0.85" material="shader: flat; transparent: true"></a-ring>
           </a-entity>
 
-          <!-- ================= 2. GROUND FLOOR (Entrance Lobby & Main Pillars) ================= -->
+          <!-- ================= 2. GROUND FLOOR (Entrance Lobby, Timber Columns & Garden) ================= -->
           <a-entity id="floor-ground" position="0 0 0" class="building-tier">
-            <!-- 4 Main Support Columns -->
-            <a-cylinder position="-0.28 0.12 -0.28" radius="0.025" height="0.16" color="#64748b"></a-cylinder>
-            <a-cylinder position="0.28 0.12 -0.28" radius="0.025" height="0.16" color="#64748b"></a-cylinder>
-            <a-cylinder position="-0.28 0.12 0.28" radius="0.025" height="0.16" color="#64748b"></a-cylinder>
-            <a-cylinder position="0.28 0.12 0.28" radius="0.025" height="0.16" color="#64748b"></a-cylinder>
+            <!-- 4 Teak Wood Support Columns -->
+            <a-cylinder position="-0.28 0.12 -0.28" radius="0.025" height="0.16" color="#92400e"></a-cylinder>
+            <a-cylinder position="0.28 0.12 -0.28" radius="0.025" height="0.16" color="#92400e"></a-cylinder>
+            <a-cylinder position="-0.28 0.12 0.28" radius="0.025" height="0.16" color="#92400e"></a-cylinder>
+            <a-cylinder position="0.28 0.12 0.28" radius="0.025" height="0.16" color="#92400e"></a-cylinder>
             <!-- Central Lobby Glass Core -->
-            <a-box position="0 0.12 0" width="0.48" height="0.16" depth="0.48" color="#38bdf8" opacity="0.4" material="transparent: true; roughness: 0.1"></a-box>
-            <!-- Main Entrance Glass Canopy -->
-            <a-box position="0 0.1 0.28" width="0.24" height="0.01" depth="0.12" color="#00f2fe" opacity="0.8"></a-box>
-            <!-- Lobby Concrete Ceiling / First Floor Base Slab -->
+            <a-box position="0 0.12 0" width="0.48" height="0.16" depth="0.48" color="#06b6d4" opacity="0.45" material="transparent: true; roughness: 0.1"></a-box>
+            <!-- Entrance Emerald Glass Canopy -->
+            <a-box position="0 0.1 0.28" width="0.24" height="0.01" depth="0.12" color="#10b981" opacity="0.85"></a-box>
+            <!-- Lobby Entrance Garden Planters -->
+            <a-box position="-0.2 0.03 0.32" width="0.12" height="0.04" depth="0.06" color="#15803d"></a-box>
+            <a-box position="0.2 0.03 0.32" width="0.12" height="0.04" depth="0.06" color="#15803d"></a-box>
+            <!-- Lobby Sandstone Ceiling / First Floor Slab -->
             <a-box position="0 0.21 0" width="0.68" height="0.02" depth="0.68" color="#334155"></a-box>
           </a-entity>
 
-          <!-- ================= 3. FLOOR 1 (Residential Apartment Level 1) ================= -->
+          <!-- ================= 3. FLOOR 1 (Terracotta Apartment & Balcony Planters) ================= -->
           <a-entity id="floor-1" position="0 0.22 0" class="building-tier">
-            <!-- Apartment Core Structure -->
+            <!-- Modern Warm Charcoal Apartment Core -->
             <a-box position="0 0.1 0" width="0.62" height="0.18" depth="0.62" color="#1e293b"></a-box>
-            <!-- Panoramic Apartment Glass Windows -->
-            <a-box position="0 0.1 0.315" width="0.5" height="0.12" depth="0.01" color="#38bdf8" opacity="0.6" material="transparent: true"></a-box>
-            <a-box position="-0.315 0.1 0" width="0.01" height="0.12" depth="0.5" color="#38bdf8" opacity="0.6" material="transparent: true"></a-box>
-            <a-box position="0.315 0.1 0" width="0.01" height="0.12" depth="0.5" color="#38bdf8" opacity="0.6" material="transparent: true"></a-box>
-            <!-- Balcony with Glass Railing (Front) -->
-            <a-box position="0 0.04 0.36" width="0.4" height="0.01" depth="0.1" color="#475569"></a-box>
-            <a-box position="0 0.08 0.41" width="0.4" height="0.07" depth="0.005" color="#00f2fe" opacity="0.7" material="transparent: true"></a-box>
-            <!-- Floor 1 Ceiling / Floor 2 Slab -->
+            <!-- Panoramic Sky Blue Windows -->
+            <a-box position="0 0.1 0.315" width="0.5" height="0.12" depth="0.01" color="#38bdf8" opacity="0.65" material="transparent: true"></a-box>
+            <a-box position="-0.315 0.1 0" width="0.01" height="0.12" depth="0.5" color="#38bdf8" opacity="0.65" material="transparent: true"></a-box>
+            <a-box position="0.315 0.1 0" width="0.01" height="0.12" depth="0.5" color="#38bdf8" opacity="0.65" material="transparent: true"></a-box>
+            <!-- Natural Teak Wood Balcony Floor -->
+            <a-box position="0 0.04 0.36" width="0.42" height="0.01" depth="0.1" color="#b45309"></a-box>
+            <!-- Emerald Glass Railing with Floral Accents -->
+            <a-box position="0 0.08 0.41" width="0.42" height="0.07" depth="0.005" color="#10b981" opacity="0.75" material="transparent: true"></a-box>
+            <a-box position="0 0.05 0.41" width="0.4" height="0.02" depth="0.02" color="#22c55e"></a-box>
+            <!-- Floor 1 Ceiling Slab -->
             <a-box position="0 0.20 0" width="0.68" height="0.02" depth="0.68" color="#334155"></a-box>
           </a-entity>
 
-          <!-- ================= 4. FLOOR 2 (Residential Apartment Level 2) ================= -->
+          <!-- ================= 4. FLOOR 2 (Sandstone Residence & Golden Lighting) ================= -->
           <a-entity id="floor-2" position="0 0.43 0" class="building-tier">
-            <!-- Apartment Core Structure -->
+            <!-- Apartment Core -->
             <a-box position="0 0.1 0" width="0.62" height="0.18" depth="0.62" color="#0f172a"></a-box>
-            <!-- Modern Accent Architectural Fins -->
-            <a-box position="-0.32 0.1 0.1" width="0.02" height="0.18" depth="0.1" color="#f8fafc"></a-box>
-            <a-box position="0.32 0.1 -0.1" width="0.02" height="0.18" depth="0.1" color="#f8fafc"></a-box>
-            <!-- Glass Windows with Warm Interior Glow -->
-            <a-box position="0 0.1 0.315" width="0.5" height="0.12" depth="0.01" color="#fbbf24" opacity="0.5" material="transparent: true"></a-box>
-            <a-box position="-0.315 0.1 0" width="0.01" height="0.12" depth="0.5" color="#38bdf8" opacity="0.6" material="transparent: true"></a-box>
-            <!-- Side Balcony with Railing -->
-            <a-box position="0.36 0.04 0" width="0.1" height="0.01" depth="0.4" color="#475569"></a-box>
-            <a-box position="0.41 0.08 0" width="0.005" height="0.07" depth="0.4" color="#00f2fe" opacity="0.7" material="transparent: true"></a-box>
-            <!-- Floor 2 Ceiling / Floor 3 Slab -->
+            <!-- Warm Natural Timber Architectural Vertical Fins -->
+            <a-box position="-0.32 0.1 0.1" width="0.02" height="0.18" depth="0.08" color="#d97706"></a-box>
+            <a-box position="0.32 0.1 -0.1" width="0.02" height="0.18" depth="0.08" color="#d97706"></a-box>
+            <!-- Sunlit Warm Golden Windows -->
+            <a-box position="0 0.1 0.315" width="0.5" height="0.12" depth="0.01" color="#fbbf24" opacity="0.6" material="transparent: true"></a-box>
+            <a-box position="-0.315 0.1 0" width="0.01" height="0.12" depth="0.5" color="#38bdf8" opacity="0.65" material="transparent: true"></a-box>
+            <!-- Side Balcony with Lush Greenery -->
+            <a-box position="0.36 0.04 0" width="0.1" height="0.01" depth="0.4" color="#b45309"></a-box>
+            <a-box position="0.41 0.08 0" width="0.005" height="0.07" depth="0.4" color="#10b981" opacity="0.75" material="transparent: true"></a-box>
+            <a-box position="0.41 0.05 0" width="0.02" height="0.02" depth="0.38" color="#22c55e"></a-box>
+            <!-- Floor 2 Ceiling Slab -->
             <a-box position="0 0.20 0" width="0.68" height="0.02" depth="0.68" color="#334155"></a-box>
           </a-entity>
 
-          <!-- ================= 5. FLOOR 3 (Luxury Penthouse Suite) ================= -->
+          <!-- ================= 5. FLOOR 3 (Luxury Penthouse Suite & Cedar Overhang) ================= -->
           <a-entity id="floor-3" position="0 0.64 0" class="building-tier">
-            <!-- Penthouse Sleek Stepped Core -->
+            <!-- Penthouse Core -->
             <a-box position="0 0.09 0" width="0.56" height="0.16" depth="0.56" color="#1e293b"></a-box>
-            <!-- Corner Floor-to-Ceiling Panoramic Glass -->
-            <a-box position="0.1 0.09 0.285" width="0.34" height="0.14" depth="0.01" color="#00f2fe" opacity="0.7" material="transparent: true"></a-box>
-            <a-box position="-0.1 0.09 0.285" width="0.34" height="0.14" depth="0.01" color="#00f2fe" opacity="0.7" material="transparent: true"></a-box>
-            <!-- Wrap-around Terrace Balcony -->
-            <a-box position="0 0.03 0.32" width="0.58" height="0.01" depth="0.1" color="#475569"></a-box>
-            <!-- Penthouse Roof Slab -->
-            <a-box position="0 0.18 0" width="0.64" height="0.02" depth="0.64" color="#0f172a"></a-box>
+            <!-- Panoramic Azure Glass Walls -->
+            <a-box position="0.1 0.09 0.285" width="0.34" height="0.14" depth="0.01" color="#06b6d4" opacity="0.75" material="transparent: true"></a-box>
+            <a-box position="-0.1 0.09 0.285" width="0.34" height="0.14" depth="0.01" color="#06b6d4" opacity="0.75" material="transparent: true"></a-box>
+            <!-- Teak Penthouse Terrace Deck -->
+            <a-box position="0 0.03 0.32" width="0.58" height="0.01" depth="0.1" color="#b45309"></a-box>
+            <!-- Penthouse Warm Timber Roof Slab -->
+            <a-box position="0 0.18 0" width="0.64" height="0.02" depth="0.64" color="#78350f"></a-box>
           </a-entity>
 
-          <!-- ================= 6. ROOFTOP (Infinity Pool, Garden & Pergola) ================= -->
+          <!-- ================= 6. ROOFTOP (Infinity Pool, Cedar Pergola & Garden) ================= -->
           <a-entity id="floor-rooftop" position="0 0.83 0" class="building-tier">
-            <!-- Rooftop Terrace Base -->
-            <a-box position="0 0.01 0" width="0.6" height="0.02" depth="0.6" color="#334155"></a-box>
-            <!-- Infinity Swimming Pool (Glowing Blue Water) -->
-            <a-box position="-0.12 0.03 -0.1" width="0.25" height="0.02" depth="0.3" color="#00f2fe" opacity="0.85" material="roughness: 0.1"></a-box>
-            <!-- Modern Architectural Wooden Pergola Canopy -->
-            <a-box position="0.15 0.08 0.1" width="0.22" height="0.01" depth="0.22" color="#d97706"></a-box>
-            <a-cylinder position="0.05 0.04 0.0" radius="0.008" height="0.08" color="#64748b"></a-cylinder>
-            <a-cylinder position="0.25 0.04 0.0" radius="0.008" height="0.08" color="#64748b"></a-cylinder>
-            <a-cylinder position="0.05 0.04 0.2" radius="0.008" height="0.08" color="#64748b"></a-cylinder>
-            <a-cylinder position="0.25 0.04 0.2" radius="0.008" height="0.08" color="#64748b"></a-cylinder>
-            <!-- Rooftop Garden Planter Greenery -->
-            <a-box position="-0.15 0.03 0.18" width="0.2" height="0.03" depth="0.08" color="#10b981"></a-box>
-            <!-- Communications Mast with Blinking Beacon -->
+            <!-- Sandstone Terrace Base -->
+            <a-box position="0 0.01 0" width="0.6" height="0.02" depth="0.6" color="#475569"></a-box>
+            <!-- Crystal Azure Infinity Pool -->
+            <a-box position="-0.12 0.03 -0.1" width="0.25" height="0.02" depth="0.3" color="#06b6d4" opacity="0.9" material="roughness: 0.05"></a-box>
+            <!-- Warm Cedar Wood Pergola Canopy -->
+            <a-box position="0.15 0.08 0.1" width="0.22" height="0.01" depth="0.22" color="#b45309"></a-box>
+            <a-cylinder position="0.05 0.04 0.0" radius="0.008" height="0.08" color="#78350f"></a-cylinder>
+            <a-cylinder position="0.25 0.04 0.0" radius="0.008" height="0.08" color="#78350f"></a-cylinder>
+            <a-cylinder position="0.05 0.04 0.2" radius="0.008" height="0.08" color="#78350f"></a-cylinder>
+            <a-cylinder position="0.25 0.04 0.2" radius="0.008" height="0.08" color="#78350f"></a-cylinder>
+            <!-- Lush Rooftop Garden Beds with Blooming Flowers -->
+            <a-box position="-0.15 0.03 0.18" width="0.22" height="0.03" depth="0.09" color="#15803d"></a-box>
+            <a-sphere position="-0.18 0.05 0.18" radius="0.01" color="#f43f5e"></a-sphere>
+            <a-sphere position="-0.12 0.05 0.18" radius="0.01" color="#f59e0b"></a-sphere>
+            <!-- Communications Mast with Rose Beacon -->
             <a-cylinder position="0.2 0.14 -0.2" radius="0.005" height="0.2" color="#94a3b8"></a-cylinder>
-            <a-sphere id="beacon-light" position="0.2 0.24 -0.2" radius="0.012" color="#ff007f" material="emissive: #ff007f; emissiveIntensity: 2"></a-sphere>
+            <a-sphere id="beacon-light" position="0.2 0.24 -0.2" radius="0.012" color="#f43f5e" material="emissive: #f43f5e; emissiveIntensity: 2.5"></a-sphere>
           </a-entity>
 
-          <!-- ================= 7. BLUEPRINT LASER SCANNER RING ================= -->
-          <a-ring id="construction-laser" position="0 0.02 0" rotation="-90 0 0" radius-inner="0.36" radius-outer="0.44" color="#00f2fe" opacity="0.9" material="shader: flat; transparent: true"></a-ring>
+          <!-- ================= 7. NATURAL BOTANICAL SCANNER RING ================= -->
+          <a-ring id="construction-laser" position="0 0.02 0" rotation="-90 0 0" radius-inner="0.36" radius-outer="0.44" color="#10b981" opacity="0.9" material="shader: flat; transparent: true"></a-ring>
 
         </a-entity>
 
         <!-- Floating Architectural Info Banner -->
         <a-entity position="0 0.45 0.15" rotation="0 0 0">
-          <a-plane width="0.8" height="0.2" color="#0f172a" opacity="0.92" material="shader: flat; transparent: true"></a-plane>
-          <a-plane width="0.82" height="0.22" position="0 0 -0.005" color="#00f2fe" opacity="0.85" material="shader: flat; transparent: true"></a-plane>
+          <a-plane width="0.8" height="0.2" color="#0b1f18" opacity="0.94" material="shader: flat; transparent: true"></a-plane>
+          <a-plane width="0.82" height="0.22" position="0 0 -0.005" color="#10b981" opacity="0.9" material="shader: flat; transparent: true"></a-plane>
           <a-text
             id="ar-info-text"
             value="DARUSUFFA ACADEMY\n3D AR Flat Foundation"
@@ -196,10 +204,10 @@
         </a-entity>
 
         <!-- Dynamic Architectural Lighting -->
-        <a-light type="ambient" intensity="1.5" color="#ffffff"></a-light>
-        <a-light id="sun-light" type="directional" position="2 4 3" intensity="2.0" color="#f8fafc"></a-light>
-        <a-light id="accent-light" type="directional" position="-2 -3 2" intensity="1.2" color="#00f2fe"></a-light>
-        <a-light id="warm-light" type="point" position="0 0.4 0.5" intensity="1.0" color="#fbbf24" distance="2"></a-light>
+        <a-light type="ambient" intensity="1.6" color="#ffffff"></a-light>
+        <a-light id="sun-light" type="directional" position="2 4 3" intensity="2.2" color="#fef3c7"></a-light>
+        <a-light id="accent-light" type="directional" position="-2 -3 2" intensity="1.4" color="#10b981"></a-light>
+        <a-light id="warm-light" type="point" position="0 0.4 0.5" intensity="1.2" color="#fbbf24" distance="2"></a-light>
 
       </a-entity>
     </a-scene>
@@ -211,7 +219,7 @@
       <div class="loading-spinner-wrapper">
         <div id="loading-ring" class="loading-ring"></div>
         <div class="loading-icon">
-          <i data-lucide="building-2"></i>
+          <i data-lucide="leaf"></i>
         </div>
       </div>
       <h2>Darusuffa WebAR</h2>
@@ -244,7 +252,7 @@
       </div>
 
       <div class="loading-tips" id="loading-tip-text">
-        <i data-lucide="shield-check"></i>
+        <i data-lucide="sparkles"></i>
         <span>Point camera at Darusuffa card to construct 3D apartment flat.</span>
       </div>
     </div>
@@ -293,7 +301,7 @@
         <div class="reticle-laser"></div>
         <div class="reticle-prompt">
           <i data-lucide="scan"></i>
-          <span>Aim camera at Darusuffa card QR base</span>
+          <span>Aim camera at Darusuffa card</span>
         </div>
       </div>
     </div>
