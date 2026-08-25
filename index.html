@@ -32,7 +32,7 @@
       mindar-image="imageTargetSrc: ./assets/card.mind; filterMinCF: 0.001; filterBeta: 10; warmupTolerance: 5; missTolerance: 5; autoStart: true; uiLoading: no; uiScanning: no; uiError: no;"
       embedded
       color-space="sRGB"
-      renderer="colorManagement: true, physicallyCorrectLights: true"
+      renderer="colorManagement: true, physicallyCorrectLights: true, alpha: true"
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false">
 
@@ -114,7 +114,7 @@
     </a-scene>
   </div>
 
-  <!-- Non-Blocking Initial Loading Screen -->
+  <!-- Loading Screen -->
   <div id="loading-overlay" class="loading-overlay">
     <div class="loading-card">
       <div class="loading-spinner-wrapper">
@@ -130,15 +130,15 @@
         <div id="progress-bar" class="progress-bar"></div>
       </div>
 
-      <!-- Immediate Enter / Dismiss Button -->
+      <!-- Immediate Enter Button -->
       <button id="btn-enter-ar" class="btn-primary" style="margin-top: 8px;">
         <i data-lucide="play"></i> Enter AR Camera
       </button>
 
-      <!-- Error Box (if permission denied) -->
+      <!-- Error Box -->
       <div id="camera-error-box" class="camera-error-box hidden">
         <div class="error-icon"><i data-lucide="alert-triangle"></i></div>
-        <div class="error-msg" id="camera-error-text">Camera permission is required.</div>
+        <div class="error-msg" id="camera-error-text">Camera access required.</div>
         <div class="error-guide">
           <p><strong>To enable camera on Android:</strong></p>
           <ol>
@@ -170,6 +170,9 @@
       </div>
 
       <div class="nav-actions">
+        <button id="btn-debug" class="btn-icon" title="View Diagnostics">
+          <i data-lucide="terminal"></i>
+        </button>
         <button id="btn-audio" class="btn-icon" title="Toggle Sound">
           <i data-lucide="volume-2"></i>
         </button>
@@ -206,7 +209,7 @@
 
     <!-- Bottom Controls & Interaction Bar -->
     <footer class="bottom-bar">
-      <!-- Action Controls (Appears when target is found) -->
+      <!-- Action Controls -->
       <div id="ar-controls" class="ar-controls hidden">
         <div class="control-group">
           <span class="control-label">3D Robot Animations</span>
@@ -240,7 +243,7 @@
 
   </div>
 
-  <!-- Target Marker Modal (For testing on second screen or phone) -->
+  <!-- Target Marker Modal -->
   <div id="target-modal" class="modal-overlay hidden">
     <div class="modal-card">
       <div class="modal-header">
@@ -306,6 +309,27 @@
       </div>
       <div class="modal-footer">
         <button id="btn-help-ok" class="btn-primary">Got it!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Diagnostics Log Modal -->
+  <div id="debug-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i data-lucide="terminal"></i>
+          <h3>Diagnostics & Logs</h3>
+        </div>
+        <button id="btn-close-debug" class="btn-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <pre id="debug-log-content" style="background: #020617; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 0.75rem; color: #38bdf8; max-height: 200px; overflow-y: auto; white-space: pre-wrap; word-break: break-all;">No logs yet</pre>
+      </div>
+      <div class="modal-footer">
+        <button onclick="window.location.reload()" class="btn-primary">
+          <i data-lucide="refresh-cw"></i> Reload
+        </button>
       </div>
     </div>
   </div>

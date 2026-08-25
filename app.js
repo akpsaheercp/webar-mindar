@@ -1,7 +1,20 @@
 /**
  * MindAR Interactive WebAR Application
- * Fail-safe loading, Camera Video Verification, Android/iOS Support
+ * Enhanced Android Video Stream Handling & On-Screen Diagnostics
  */
+
+// Safe Log Buffer for On-Screen Debugging
+const debugLogs = [];
+function logDebug(msg) {
+  const time = new Date().toISOString().split('T')[1].slice(0, 8);
+  const logStr = `[${time}] ${msg}`;
+  debugLogs.push(logStr);
+  console.log(logStr);
+  const debugContent = document.getElementById('debug-log-content');
+  if (debugContent) {
+    debugContent.textContent = debugLogs.slice(-15).join('\n');
+  }
+}
 
 // Initialize Lucide Icons Safely
 function initIcons() {
@@ -10,12 +23,13 @@ function initIcons() {
       window.lucide.createIcons();
     }
   } catch (e) {
-    console.warn('Lucide icons init warning:', e);
+    console.warn('Lucide icons warning:', e);
   }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   initIcons();
+  logDebug('DOM loaded. Initializing WebAR...');
 
   // DOM Elements
   const loadingOverlay = document.getElementById('loading-overlay');
@@ -38,11 +52,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Modals & Action Buttons
   const targetModal = document.getElementById('target-modal');
   const helpModal = document.getElementById('help-modal');
+  const debugModal = document.getElementById('debug-modal');
   const btnViewTarget = document.getElementById('btn-view-target');
   const btnCloseModal = document.getElementById('btn-close-modal');
   const btnHelp = document.getElementById('btn-help');
   const btnCloseHelp = document.getElementById('btn-close-help');
   const btnHelpOk = document.getElementById('btn-help-ok');
+  const btnDebug = document.getElementById('btn-debug');
+  const btnCloseDebug = document.getElementById('btn-close-debug');
   const btnAudio = document.getElementById('btn-audio');
   const btnShare = document.getElementById('btn-action-share');
   const btnGithub = document.getElementById('btn-action-github');
@@ -88,9 +105,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function playFoundChime() {
     if (!audioEnabled) return;
-    playTone(523.25, 'triangle', 0.12, 0.15); // C5
-    setTimeout(() => playTone(659.25, 'triangle', 0.15, 0.18), 100); // E5
-    setTimeout(() => playTone(783.99, 'sine', 0.35, 0.2), 200); // G5
+    playTone(523.25, 'triangle', 0.12, 0.15);
+    setTimeout(() => playTone(659.25, 'triangle', 0.15, 0.18), 100);
+    setTimeout(() => playTone(783.99, 'sine', 0.35, 0.2), 200);
   }
 
   function playClick() {
@@ -143,6 +160,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (helpModal) {
     helpModal.addEventListener('click', (e) => {
       if (e.target === helpModal) closeModal(helpModal);
+    });
+  }
+
+  if (btnDebug) btnDebug.addEventListener('click', () => openModal(debugModal));
+  if (btnCloseDebug) btnCloseDebug.addEventListener('click', () => closeModal(debugModal));
+  if (debugModal) {
+    debugModal.addEventListener('click', (e) => {
+      if (e.target === debugModal) closeModal(debugModal);
     });
   }
 
@@ -204,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (targetAnchor) {
     targetAnchor.addEventListener('targetFound', () => {
-      console.log('MindAR Target Found!');
+      logDebug('🎯 Target Found!');
       playFoundChime();
 
       if (isFirstFound) {
@@ -222,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     targetAnchor.addEventListener('targetLost', () => {
-      console.log('MindAR Target Lost!');
+      logDebug('Target Lost');
       if (scanningGuide) scanningGuide.classList.remove('hidden');
       if (arControls) arControls.classList.add('hidden');
       if (statusBanner) {
@@ -246,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
       initAudio();
       playClick();
       dismissLoadingOverlay();
-      ensureVideoPlaying();
+      fixAndroidVideoFeed();
     });
   }
 
@@ -256,61 +281,105 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Ensure WebGL Transparency & Video Playback
+  // Ensure WebGL Transparency
   function ensureTransparentRenderer() {
     if (sceneEl && sceneEl.renderer) {
       sceneEl.renderer.setClearColor(0x000000, 0);
     }
   }
 
-  function ensureVideoPlaying() {
+  // Robust Android Video Stream Fixer
+  function fixAndroidVideoFeed() {
+    ensureTransparentRenderer();
     const video = document.querySelector('video');
-    if (video) {
-      if (video.paused) {
-        video.play().catch(e => console.log('video.play() caught:', e));
-      }
-      video.style.opacity = '1';
-      video.style.visibility = 'visible';
+    if (!video) {
+      logDebug('Waiting for video element...');
+      return;
     }
+
+    logDebug(`Video state: ${video.videoWidth}x${video.videoHeight}, paused: ${video.paused}`);
+
+    // If video has not started playing, trigger play
+    if (video.paused) {
+      video.play().then(() => {
+        logDebug('video.play() succeeded');
+      }).catch(err => {
+        logDebug(`video.play() warning: ${err.message}`);
+      });
+    }
+
+    // Force Android viewport dimensions if NaN or 0
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const videoAspect = (video.videoWidth && video.videoHeight) ? (video.videoWidth / video.videoHeight) : (w / h);
+    const screenAspect = w / h;
+
+    let targetW, targetH, targetTop, targetLeft;
+    if (videoAspect > screenAspect) {
+      targetH = h;
+      targetW = h * videoAspect;
+      targetTop = 0;
+      targetLeft = -(targetW - w) / 2;
+    } else {
+      targetW = w;
+      targetH = w / videoAspect;
+      targetLeft = 0;
+      targetTop = -(targetH - h) / 2;
+    }
+
+    // Ensure valid non-NaN pixel values
+    if (!isNaN(targetW) && targetW > 0 && !isNaN(targetH) && targetH > 0) {
+      video.style.width = `${Math.round(targetW)}px`;
+      video.style.height = `${Math.round(targetH)}px`;
+      video.style.top = `${Math.round(targetTop)}px`;
+      video.style.left = `${Math.round(targetLeft)}px`;
+    } else {
+      // Fallback fullscreen cover
+      video.style.width = '100vw';
+      video.style.height = '100vh';
+      video.style.objectFit = 'cover';
+      video.style.top = '0px';
+      video.style.left = '0px';
+    }
+
+    video.style.position = 'absolute';
+    video.style.zIndex = '-2';
+    video.style.display = 'block';
+    video.style.visibility = 'visible';
+    video.style.opacity = '1';
   }
 
   // Hook into A-Frame and MindAR Lifecycle
   if (sceneEl) {
     sceneEl.addEventListener('arReady', () => {
-      console.log('MindAR arReady fired');
-      ensureTransparentRenderer();
-      ensureVideoPlaying();
+      logDebug('MindAR arReady event fired!');
+      fixAndroidVideoFeed();
       dismissLoadingOverlay();
     });
 
     sceneEl.addEventListener('renderstart', () => {
-      console.log('A-Frame renderstart fired');
-      ensureTransparentRenderer();
-      ensureVideoPlaying();
-      setTimeout(dismissLoadingOverlay, 400);
+      logDebug('A-Frame renderstart event fired');
+      fixAndroidVideoFeed();
+      setTimeout(dismissLoadingOverlay, 300);
     });
 
     sceneEl.addEventListener('loaded', () => {
-      console.log('A-Frame loaded fired');
-      ensureTransparentRenderer();
-      ensureVideoPlaying();
-      setTimeout(dismissLoadingOverlay, 600);
+      logDebug('A-Frame loaded event fired');
+      fixAndroidVideoFeed();
+      setTimeout(dismissLoadingOverlay, 500);
     });
 
     sceneEl.addEventListener('arError', (event) => {
-      console.error('arError fired:', event);
+      logDebug(`arError: ${JSON.stringify(event.detail || event)}`);
       if (cameraErrorBox) cameraErrorBox.classList.remove('hidden');
       if (btnEnterAR) btnEnterAR.classList.add('hidden');
       if (progressContainer) progressContainer.classList.add('hidden');
     });
   }
 
-  // Check periodically during first 4 seconds to guarantee video is playing and background is clear
-  const checkInterval = setInterval(() => {
-    ensureTransparentRenderer();
-    ensureVideoPlaying();
-  }, 500);
-  setTimeout(() => clearInterval(checkInterval), 4000);
+  // Watch video feed continuously during initial 6 seconds
+  const monitorInterval = setInterval(fixAndroidVideoFeed, 400);
+  setTimeout(() => clearInterval(monitorInterval), 6000);
 
   // Safety timeout: Dismiss loading overlay after 1.5 seconds
   setTimeout(dismissLoadingOverlay, 1500);
@@ -327,7 +396,10 @@ document.addEventListener('DOMContentLoaded', () => {
       canvas.height = window.innerHeight;
     }
   }
-  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('resize', () => {
+    resizeCanvas();
+    fixAndroidVideoFeed();
+  });
   resizeCanvas();
 
   function triggerConfetti() {
@@ -364,7 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
     particles.forEach(p => {
       p.x += p.vx;
       p.y += p.vy;
-      p.vy += 0.25; // gravity
+      p.vy += 0.25;
       p.rotation += p.vRot;
       p.alpha -= p.decay;
 
